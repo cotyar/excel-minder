@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+option csharp_namespace = "ExcelMinder.Shared";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service StockSimulator {
+  // Returns a list of available stocks
+  rpc ListStocks(google.protobuf.Empty) returns (StockList) {}
+
+  // Returns the current price of a stock
+  rpc GetStockPrice(StockRequest) returns (StockPrice) {}
+
+  // Executes a trade on the stock market
+  rpc ExecuteTrade(TradeRequest) returns (TradeResponse) {}
+}
+
+message StockList {
+  repeated Stock stocks = 1;
+}
+
+message Stock {
+  string symbol = 1;
+  string name = 2;
+}
+
+message StockRequest {
+  string symbol = 1;
+}
+
+message StockPrice {
+  string symbol = 1;
+  float price = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}
+
+message TradeRequest {
+  string symbol = 1;
+  int64 quantity = 2;
+  TradeType type = 3;
+  float price = 4;
+}
+
+message TradeResponse {
+  string symbol = 1;
+  int64 quantity = 2;
+  TradeType type = 3;
+  float price = 4;
+  float total_cost = 5;
+  google.protobuf.Timestamp timestamp = 6;
+}
+
+enum TradeType {
+  BUY = 0;
+  SELL = 1;
+}

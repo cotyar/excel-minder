@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+using ExcelMinder.Shared;
 using Grpc.Core;
-using ExcelMinderGrpc;
+using Microsoft.Extensions.Logging;
 
-namespace ExcelMinderGrpc.Services;
+namespace ExcelMinder.Services;
 
 public class GreeterService : Greeter.GreeterBase
 {

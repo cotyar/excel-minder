@@ -51,16 +51,38 @@
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
     </ItemGroup>
 
+<!--    <ItemGroup>-->
+<!--        <Content Include="..\ExcelMinder.Shared\Protos\greet.proto">-->
+<!--            <Link>Protos\greet.proto</Link>-->
+<!--        </Content>-->
+<!--        <Content Include="..\ExcelMinder.Shared\Protos\stock_simulator.proto">-->
+<!--            <Link>Protos\stock_simulator.proto</Link>-->
+<!--        </Content>-->
+<!--    </ItemGroup>-->
+<!--    <ItemGroup>-->
+<!--        <Content Include="..\ExcelMinder.Shared\Protos\**\*.proto" />-->
+<!--    </ItemGroup>-->
+
+<!--    <ItemGroup>-->
+<!--        <Content Include="..\ExcelMinder.Shared\Protos\**\*">-->
+<!--            <Link>Protos\%(RecursiveDir)%(Filename)%(Extension)</Link>-->
+<!--        </Content>-->
+<!--    </ItemGroup>-->
+
+
     <ItemGroup>
         <!--        <Protobuf Include="Protos\google\api\http.proto" ProtoRoot="Protos" GrpcServices="Server" />-->
         <!--        <Protobuf Include="Protos\google\api\annotations.proto" ProtoRoot="Protos" GrpcServices="Server" />-->
         <!--        <Protobuf Include="protos/**/*.proto" ProtoRoot="Protos" GrpcServices="Server" AdditionalImportDirs="" />-->
 
-        <Protobuf Include="../ExcelMinder.Shared/Protos/greet.proto" ProtoRoot="../ExcelMinder.Shared/Protos" GrpcServices="Server" />
+        <Protobuf Include="../ExcelMinder.Shared/Protos/greet.proto" ProtoRoot="../ExcelMinder.Shared/Protos" GrpcServices="Both" />
+        <Protobuf Include="../ExcelMinder.Shared/Protos/stock_simulator.proto" ProtoRoot="../ExcelMinder.Shared/Protos" GrpcServices="Both" />
+<!--        <Protobuf Include="Protos/greet.proto" ProtoRoot="Protos" GrpcServices="Both" />-->
+<!--        <Protobuf Include="Protos/stock_simulator.proto" ProtoRoot="Protos" GrpcServices="Both" />-->
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ExcelMinder.Shared\ExcelMinder.Shared.csproj" />
+        <ProjectReference Include="..\ExcelMinder.Shared\ExcelMinder.Shared.csproj" />
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

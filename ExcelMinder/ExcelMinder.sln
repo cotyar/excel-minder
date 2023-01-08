@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelMinder", "ExcelMinder\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelMinder.Shared", "ExcelMinder.Shared\ExcelMinder.Shared.csproj", "{865FFC48-23DA-4709-B77E-15F977E4E942}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelMinder.Excel", "ExcelMinder.Excel\ExcelMinder.Excel.csproj", "{E3C350BD-6B4A-4C62-89DE-64BF8C9D4B5E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelMinder.Excel.Net6", "ExcelMinder.Excel.Net6\ExcelMinder.Excel.Net6.csproj", "{D923A77C-8335-4F05-8F6E-FFBDC681FEE4}"
 EndProject
 Global
@@ -22,10 +20,6 @@ Global
 		{865FFC48-23DA-4709-B77E-15F977E4E942}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{865FFC48-23DA-4709-B77E-15F977E4E942}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{865FFC48-23DA-4709-B77E-15F977E4E942}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E3C350BD-6B4A-4C62-89DE-64BF8C9D4B5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E3C350BD-6B4A-4C62-89DE-64BF8C9D4B5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E3C350BD-6B4A-4C62-89DE-64BF8C9D4B5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E3C350BD-6B4A-4C62-89DE-64BF8C9D4B5E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D923A77C-8335-4F05-8F6E-FFBDC681FEE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D923A77C-8335-4F05-8F6E-FFBDC681FEE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D923A77C-8335-4F05-8F6E-FFBDC681FEE4}.Release|Any CPU.ActiveCfg = Release|Any CPU

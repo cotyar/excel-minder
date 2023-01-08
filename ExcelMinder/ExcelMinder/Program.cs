@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using ExcelMinder.Data;
 using ExcelMinder.Models;
-using ExcelMinderGrpc.Services;
+using ExcelMinder.Services;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
