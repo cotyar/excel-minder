@@ -15,6 +15,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="ExcelDna.AddIn" Version="1.6.0" />
+        <PackageReference Include="ExcelDna.Integration" Version="1.6.0" />
         <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="7.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Grpc.JsonTranscoding" Version="7.0.1" />
@@ -37,14 +39,6 @@
     </ItemGroup>
 
     <ItemGroup>
-<!--        <Protobuf Include="Protos\google\api\http.proto" ProtoRoot="Protos" GrpcServices="Server" />-->
-<!--        <Protobuf Include="Protos\google\api\annotations.proto" ProtoRoot="Protos" GrpcServices="Server" />-->
-<!--        <Protobuf Include="protos/**/*.proto" ProtoRoot="Protos" GrpcServices="Server" AdditionalImportDirs="" />-->
-        
-        <Protobuf Include="Protos\greet.proto" ProtoRoot="Protos" GrpcServices="Server" />
-    </ItemGroup>
-
-    <ItemGroup>
         <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
     </ItemGroup>
     <ItemGroup>
@@ -55,6 +49,18 @@
         </Content>
         <None Remove="$(SpaRoot)**" />
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!--        <Protobuf Include="Protos\google\api\http.proto" ProtoRoot="Protos" GrpcServices="Server" />-->
+        <!--        <Protobuf Include="Protos\google\api\annotations.proto" ProtoRoot="Protos" GrpcServices="Server" />-->
+        <!--        <Protobuf Include="protos/**/*.proto" ProtoRoot="Protos" GrpcServices="Server" AdditionalImportDirs="" />-->
+
+        <Protobuf Include="../ExcelMinder.Shared/Protos/greet.proto" ProtoRoot="../ExcelMinder.Shared/Protos" GrpcServices="Server" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ExcelMinder.Shared\ExcelMinder.Shared.csproj" />
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
