@@ -67,6 +67,7 @@ app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "v1"));
 
 // Configure the HTTP request pipeline.
 app.MapGrpcService<GreeterService>();
+app.MapGrpcService<StockSimulatorService>();
 app.MapGrpcReflectionService();
 
 app.MapGet("/", () => "Boom");

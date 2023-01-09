@@ -14,6 +14,10 @@ service StockSimulator {
 
   // Executes a trade on the stock market
   rpc ExecuteTrade(TradeRequest) returns (TradeResponse) {}
+
+  rpc LastTradeRequests(PageRequest) returns (TradeRequestList) {}
+  
+  rpc LastExecutedTrades(PageRequest) returns (TradeResponseList) {}
 }
 
 message StockList {
@@ -54,4 +58,17 @@ message TradeResponse {
 enum TradeType {
   BUY = 0;
   SELL = 1;
+}
+
+message PageRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+}
+
+message TradeRequestList {
+  repeated TradeRequest trades = 1;
+}
+
+message TradeResponseList {
+  repeated TradeResponse trades = 1;
 }
