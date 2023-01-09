@@ -3,6 +3,10 @@
     <PropertyGroup>
         <TargetFramework>net6.0-windows</TargetFramework>
         <UseWindowsForms>True</UseWindowsForms>
+
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+        <ExcelDnaPackNativeLibraryDependencies>true</ExcelDnaPackNativeLibraryDependencies>
+        <ExcelDnaPackManagedDependencies>true</ExcelDnaPackManagedDependencies>
     </PropertyGroup>
 
     <ItemGroup>
