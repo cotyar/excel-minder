@@ -1,7 +1,7 @@
 # Excel Minder
 A scalable realtime financial data processing environment. Excel/Python/Web.
 
-[img](Videos/Animation.gif)
+![img](Videos/Animation.gif)
 
 ## TODO: 
 - [x] Add ExcelDNA Project 
