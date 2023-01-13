@@ -72,3 +72,19 @@ message TradeRequestList {
 message TradeResponseList {
   repeated TradeResponse trades = 1;
 }
+
+
+//External APIs (derived from Alpha Vantage messages
+
+message RealtimeCurrencyExchangeRate {
+  string from_currency_code = 1;
+  string from_currency_name = 2;
+  string to_currency_code = 3;
+  string to_currency_name = 4;
+  double exchange_rate = 5;
+  string last_refreshed = 6;
+  string time_zone = 7;
+  double bid_price = 8;
+  double ask_price = 9;
+}
+

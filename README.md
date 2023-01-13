@@ -1,6 +1,7 @@
 # Excel Minder
 A scalable realtime financial data processing environment. Excel/Python/Web.
 
+## Click the _gif_ below:
 ![img](Videos/Animation.gif)
 
 ## TODO: 
@@ -14,5 +15,7 @@ A scalable realtime financial data processing environment. Excel/Python/Web.
 - [x] Add Python gRPC API Project
 - [ ] Add Python gRPC remote client Project
 - [ ] Add a simple Ribbon to the Excel Addin
-- [ ] Refactor Simulation to realistic data 
+- [ ] Refactor Simulation to realistic data
+- [x] Add connection to Alpha Vantage from Python
+- [ ] Add prices from Alpha Vantage 
 - [ ] Add Tensorflow-based Quantitative Analysis library from https://github.com/google/tf-quant-finance
