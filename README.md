@@ -1,5 +1,6 @@
 # Excel Minder
 A scalable realtime financial data processing environment. Excel/Python/Web.
+(In a very pre-alpha state, so far spent only a couple of hours writing it, but more to come)
 
 ## Click the _gif_ below:
 ![img](Videos/Animation.gif)
