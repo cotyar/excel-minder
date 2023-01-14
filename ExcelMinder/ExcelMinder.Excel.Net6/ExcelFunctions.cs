@@ -1,10 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using System.Windows.Forms;
 using ExcelDna.Integration;
 using ExcelMinder.Shared;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Net.Client;
+using Microsoft.Office.Interop.Excel;
+using Application = Microsoft.Office.Interop.Excel.Application;
+using Range = Microsoft.Office.Interop.Excel.Range;
+using ExcelDna.Integration.Rtd;
 
 namespace ExcelMinder.Excel.Net6;
 
@@ -117,5 +123,13 @@ public class ExcelFunctions
             { "Total Cost", response.TotalCost },
             { "Timestamp", DateTime.Parse(response.Timestamp.ToDateTime().ToString()) }
         };
+    }
+
+    [ExcelFunction(Description =
+        "Reads the background color, font, font style, text color, cell value, cell weight, cell height, border color, border thickness, border style of all cells in a range in an Excel spreadsheet")]
+    public static object[,] GetRangeProperties([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range)
+    {
+        return EnumerableExtensions.To2DArray(ExcelHelpers.GetRangePropertiesList((range as ExcelReference)?.ToRange())
+            .Select(cp => new object[] { cp.ToJson() }).ToArray());
     }
 }

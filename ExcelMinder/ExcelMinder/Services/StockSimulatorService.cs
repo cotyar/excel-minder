@@ -6,7 +6,7 @@ using Grpc.Core;
 
 namespace ExcelMinder.Services;
 
-public class StockSimulatorService : Shared.StockSimulator.StockSimulatorBase
+public class StockSimulatorService : StockSimulator.StockSimulatorBase
 {
     // A list of available stocks
     private static readonly ImmutableArray<Stock> Stocks = new List<Stock>
@@ -19,7 +19,7 @@ public class StockSimulatorService : Shared.StockSimulator.StockSimulatorBase
     }.ToImmutableArray();
 
     // A dictionary of stock prices, keyed by symbol
-    private static readonly Dictionary<string, float> Prices = new Dictionary<string, float>
+    private static readonly Dictionary<string, float> Prices = new()
     {
         { "AAPL", 119.50f },
         { "GOOG", 1035.00f },

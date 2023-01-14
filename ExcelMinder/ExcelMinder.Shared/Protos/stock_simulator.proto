@@ -18,6 +18,10 @@ service StockSimulator {
   rpc LastTradeRequests(PageRequest) returns (TradeRequestList) {}
   
   rpc LastExecutedTrades(PageRequest) returns (TradeResponseList) {}
+  
+  
+  // TODO: Move to a separate service
+  
 }
 
 message StockList {
@@ -73,8 +77,8 @@ message TradeResponseList {
   repeated TradeResponse trades = 1;
 }
 
-
-//External APIs (derived from Alpha Vantage messages
+// TODO: Move to a separate proto file
+// External APIs (derived from Alpha Vantage messages
 
 message RealtimeCurrencyExchangeRate {
   string from_currency_code = 1;
@@ -88,3 +92,23 @@ message RealtimeCurrencyExchangeRate {
   double ask_price = 9;
 }
 
+// TODO: Move to a separate proto file
+// Excel communication messages
+
+message CellProperties {
+  string cell_value = 1;
+  double text_color = 2;
+  double background_color = 3;
+  string font = 4;
+  bool font_style = 5;
+  double cell_weight = 6;
+  double cell_height = 7;
+  double border_color = 8;
+  double border_thickness = 9;
+  string border_style = 10;
+}
+
+message ExcelReport {
+  string report_id = 1;
+  repeated CellProperties cell_properties = 2;
+} 
