@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using ExcelMinder.Shared;
+using ExcelMinder.Utils;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 
@@ -9,30 +10,27 @@ namespace ExcelMinder.Services;
 public class StockSimulatorService : StockSimulator.StockSimulatorBase
 {
     // A list of available stocks
-    private static readonly ImmutableArray<Stock> Stocks = new List<Stock>
+    private readonly ConcurrentDictionary<string, Stock> _stocks = new(new List<Stock>
     {
         new() { Symbol = "AAPL", Name = "Apple Inc." },
         new() { Symbol = "GOOG", Name = "Alphabet Inc." },
         new() { Symbol = "MSFT", Name = "Microsoft Corporation" },
         new() { Symbol = "FB", Name = "Facebook, Inc." },
         new() { Symbol = "AMZN", Name = "Amazon.com, Inc." }
-    }.ToImmutableArray();
+    }.Select(stock => new KeyValuePair<string, Stock>(stock.Symbol, stock)));
 
     // A dictionary of stock prices, keyed by symbol
-    private static readonly Dictionary<string, float> Prices = new()
-    {
-        { "AAPL", 119.50f },
-        { "GOOG", 1035.00f },
-        { "MSFT", 97.50f },
-        { "FB", 199.00f },
-        { "AMZN", 1350.00f }
-    };
+    private volatile StockPriceSnapshot _priceSnapshot = new [] { ("AAPL", 119.50f), ("GOOG", 1_700.00f), ("MSFT", 200.00f), ("FB", 250.00f), ("AMZN", 3_000.00f) }.ToStockSnapshot();
     
+    
+
     // A list of trade requests
-    private static ConcurrentDictionary<Timestamp, TradeRequest> requests = new();
+    private readonly ConcurrentDictionary<Timestamp, TradeRequest> _requests = new();
     
     // A list of executed trade requests
-    private static ConcurrentDictionary<Timestamp, TradeResponse> responses = new();
+    private readonly ConcurrentDictionary<Timestamp, TradeResponse> _responses = new();
+
+    private readonly ConcurrentBag<IServerStreamWriter<StockList>> _responseStreams = new();
     
     public override Task<TradeResponse> ExecuteTrade(TradeRequest request, ServerCallContext context)
     {
@@ -48,31 +46,43 @@ public class StockSimulatorService : StockSimulator.StockSimulatorBase
             Timestamp = timestamp
         };
     
-        requests[timestamp] = request;
-        responses[timestamp] = response;
+        _requests[timestamp] = request;
+        _responses[timestamp] = response;
         
         return Task.FromResult(response);
     }
 
     // The ListStocks method returns a list of available stocks
-    public override Task<StockList> ListStocks(Empty request, ServerCallContext context) => Task.FromResult(new StockList { Stocks = { Stocks } });
+    public override Task<StockList> ListStocks(Empty request, ServerCallContext context) => Task.FromResult(new StockList { Stocks = { _stocks.Values.OrderBy(s => s.Symbol) } });
 
     // The GetStockPrice method returns the current price of a stock
     public override Task<StockPrice> GetStockPrice(StockRequest request, ServerCallContext context)
     {
-        if (Prices.TryGetValue(request.Symbol, out var price))
-        {
-            return Task.FromResult(new StockPrice
-            {
-                Symbol = request.Symbol,
-                Price = price,
-                Timestamp = Timestamp.FromDateTime(DateTime.UtcNow)
-            });
-        }
+    //     if (_priceSnapshot.TryGetValue(request.Symbol, out var price))
+    //     {
+    //         return Task.FromResult(new StockPrice
+    //         {
+    //             Symbol = request.Symbol,
+    //             Price = price.Price,
+    //             Timestamp = Timestamp.FromDateTime(DateTime.UtcNow)
+    //         });
+    //     }
 
+        StockPrice price;
+        if ((price = _priceSnapshot.Prices.FirstOrDefault(s => s.Symbol == request.Symbol)) != null)
+        {
+            return Task.FromResult(price);
+        }
+        
         throw new RpcException(new Status(StatusCode.NotFound, $"Stock not found: {request.Symbol}"));
     }
-    
+
+    public override Task ListStocksUpdates(Empty request, IServerStreamWriter<StockList> responseStream, ServerCallContext context)
+    {
+        _responseStreams.Add(responseStream);
+        return base.ListStocksUpdates(request, responseStream, context);
+    }
+
     // public override async Task GetTradeHistory(Empty request, IServerStreamWriter<TradeResponse> responseStream, ServerCallContext context)
     // {
     //     foreach (var response in responses.Values)
@@ -83,13 +93,13 @@ public class StockSimulatorService : StockSimulator.StockSimulatorBase
 
     public override Task<TradeRequestList> LastTradeRequests(PageRequest request, ServerCallContext context)
     {
-        var tradeRequests = requests.Values.Skip(request.Page * request.PageSize).Take(request.PageSize).ToList();
+        var tradeRequests = _requests.Values.Skip(request.Page * request.PageSize).Take(request.PageSize).ToList();
         return Task.FromResult(new TradeRequestList { Trades = { tradeRequests } });
     }
 
     public override Task<TradeResponseList> LastExecutedTrades(PageRequest request, ServerCallContext context)
     {
-        var tradeResponses = responses.Values.Skip(request.Page * request.PageSize).Take(request.PageSize).ToList();
+        var tradeResponses = _responses.Values.Skip(request.Page * request.PageSize).Take(request.PageSize).ToList();
         return Task.FromResult(new TradeResponseList { Trades = { tradeResponses } });
     }
 }

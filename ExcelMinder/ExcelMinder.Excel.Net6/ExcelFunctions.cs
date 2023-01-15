@@ -30,24 +30,18 @@ public class ExcelFunctions
     [ExcelFunction(Description = "Simulates stock prices using a random walk model.")]
     public static object[,] SimulateStockPrices(
         [ExcelArgument(Description = "The starting price of the stock.")] double startPrice,
-        [ExcelArgument(Description = "The number of days to simulate.")] int days,
-        [ExcelArgument(Description = "The mean return of the stock (per day).")] double meanReturn,
-        [ExcelArgument(Description = "The standard deviation of the return (per day).")] double stdDev)
+        [ExcelArgument(Description = "The number of ticks to simulate.")] int ticks,
+        [ExcelArgument(Description = "The mean return of the stock (per tick).")] double meanReturn,
+        [ExcelArgument(Description = "The standard deviation of the return (per tick).")] double stdDev)
     {
-        MessageBox.Show("Called", "Called", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        
         var rand = new Random();
-        var prices = new List<double>();
-        var price = startPrice;
-        for (int i = 0; i < days; i++)
-        {
-            var shock = rand.Next() * 100;
-            price += shock;
-            prices.Add(price);
-        }
+        
+        var prices = Enumerable.Range(0, ticks)
+            .Select(i => startPrice * Math.Exp(meanReturn + stdDev * rand.Next()))
+            .ToArray();
 
-        var result = new object[prices.Count, 1];
-        for (int i = 0; i < prices.Count; i++)
+        var result = new object[prices.Length, 1];
+        for (int i = 0; i < prices.Length; i++)
         {
             // ReSharper disable once HeapView.BoxingAllocation
             result[i, 0] = prices[i];
@@ -120,4 +114,13 @@ public class ExcelFunctions
     public static object[,] GetRangeProperties([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range) =>
         EnumerableExtensions.To2DArray(ExcelHelpers.GetRangePropertiesList((range as ExcelReference)?.ToRange())
             .Select(cp => new object[] { cp.ToJson() }).ToArray());
+    
+    
+    [ExcelFunction(Description = "Provides a ticking clock")]
+    public static object dnaRtdClock_IExcelObservable(string param)
+    {
+        string functionName = "dnaRtdClock_IExcelObservable";
+        object paramInfo = param; // could be one parameter passed in directly, or an object array of all the parameters: new object[] {param1, param2}
+        return ExcelAsyncUtil.Observe(functionName, paramInfo, () => new ExcelObservableClock());
+    }
 }

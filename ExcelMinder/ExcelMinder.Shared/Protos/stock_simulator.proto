@@ -8,6 +8,10 @@ import "google/protobuf/timestamp.proto";
 service StockSimulator {
   // Returns a list of available stocks
   rpc ListStocks(google.protobuf.Empty) returns (StockList) {}
+  rpc ListStocksUpdates(google.protobuf.Empty) returns (stream StockList) {}
+
+  // Add a stock to the list of available stocks 
+  rpc AddStocks(Stock) returns (google.protobuf.Empty) {}
 
   // Returns the current price of a stock
   rpc GetStockPrice(StockRequest) returns (StockPrice) {}
@@ -39,8 +43,14 @@ message StockRequest {
 
 message StockPrice {
   string symbol = 1;
+  // TODO: Use a WKT decimal type
   float price = 2;
-  google.protobuf.Timestamp timestamp = 3;
+  google.protobuf.Timestamp timestamp = 30;
+}
+
+message StockPriceSnapshot {
+  google.protobuf.Timestamp timestamp = 1;
+  repeated StockPrice prices = 2;
 }
 
 message TradeRequest {
