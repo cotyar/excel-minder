@@ -30,11 +30,11 @@ static class EnumerableExtensions
     public static string ToJson<T>(this T source) where T: IMessage => JsonSerializer.Serialize(source, _jsonSerializerOptions);
 
     private static JsonSerializerOptions _jsonSerializerOptions = new Lazy<JsonSerializerOptions>(() =>
-    {
-        var options = new JsonSerializerOptions();
-        options.AddProtobufSupport();
-        return options;
-    }).Value;
+        {
+            var options = new JsonSerializerOptions();
+            options.AddProtobufSupport();
+            return options;
+        }).Value;
     
     public static T FromJson<T>(this string source) where T: IMessage => JsonSerializer.Deserialize<T>(source, _jsonSerializerOptions);
 

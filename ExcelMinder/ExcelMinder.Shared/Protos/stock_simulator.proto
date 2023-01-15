@@ -96,16 +96,41 @@ message RealtimeCurrencyExchangeRate {
 // Excel communication messages
 
 message CellProperties {
-  string cell_value = 1;
-  double text_color = 2;
-  double background_color = 3;
-  string font = 4;
-  bool font_style = 5;
+  message FontStyle {
+    bool bold = 1;
+    bool italic = 2;
+    int32 underline = 3;
+  }
+  enum LineStyle {
+    NONE = 0;
+    SOLID = 1;
+    DASHED = 2;
+    DOTTED = 3;
+    DOUBLE = 4;
+    DASH_DOTTED = 5;
+    DASH_DOT_DOTTED = 6;
+    SLANT_DASH_DOTTED = 7;
+  }
+  message Border {
+    message BorderProperties {
+      double color = 1;
+      double thickness = 2;
+      LineStyle lineStyle = 3;
+    }
+    BorderProperties all = 1;
+    BorderProperties top = 2;
+    BorderProperties bottom = 3;
+    BorderProperties left = 4;
+    BorderProperties right = 5;
+  }
+  double background_color = 1;
+  string font = 2;
+  FontStyle font_style = 3;
+  double text_color = 4;
+  string cell_value = 5;
   double cell_weight = 6;
   double cell_height = 7;
-  double border_color = 8;
-  double border_thickness = 9;
-  string border_style = 10;
+  Border border = 8;
 }
 
 message ExcelReport {
