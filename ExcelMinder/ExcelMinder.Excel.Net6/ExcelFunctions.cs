@@ -84,27 +84,17 @@ public class ExcelFunctions
     }
 
     [ExcelFunction(Description = "Gets the current price of a stock")]
-    public static object GetStockPrice(string symbol)
-    {
-        var response = Client.GetStockPrice(new StockRequest { Symbol = symbol });
-        return response.Price;
-    }
+    public static object GetStockPrice(string symbol) => Client.GetStockPrice(new StockRequest { Symbol = symbol })?.Price;
 
     [ExcelFunction(Description = "Executes a trade on the stock market")]
     public static object ExecuteTrade(string symbol, long quantity, string type, double price)
     {
-        TradeType tradeType;
-        switch (type.ToLower())
+        var tradeType = type.ToLower() switch
         {
-            case "buy":
-                tradeType = TradeType.Buy;
-                break;
-            case "sell":
-                tradeType = TradeType.Sell;
-                break;
-            default:
-                throw new ArgumentException("Invalid trade type. Must be 'buy' or 'sell'.");
-        }
+            "buy" => TradeType.Buy,
+            "sell" => TradeType.Sell,
+            _ => throw new ArgumentException("Invalid trade type. Must be 'buy' or 'sell'.")
+        };
 
         var response = Client.ExecuteTrade(new TradeRequest
         {
@@ -127,9 +117,7 @@ public class ExcelFunctions
 
     [ExcelFunction(Description =
         "Reads the background color, font, font style, text color, cell value, cell weight, cell height, border color, border thickness, border style of all cells in a range in an Excel spreadsheet")]
-    public static object[,] GetRangeProperties([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range)
-    {
-        return EnumerableExtensions.To2DArray(ExcelHelpers.GetRangePropertiesList((range as ExcelReference)?.ToRange())
+    public static object[,] GetRangeProperties([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range) =>
+        EnumerableExtensions.To2DArray(ExcelHelpers.GetRangePropertiesList((range as ExcelReference)?.ToRange())
             .Select(cp => new object[] { cp.ToJson() }).ToArray());
-    }
 }

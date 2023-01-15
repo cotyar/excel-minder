@@ -53,12 +53,7 @@ public class RibbonController : ExcelRibbon
     // }    
     
     public void OnSendReport(IRibbonControl control)
-    {
-        // Get a reference to the active worksheet
-        Application application = (Application)ExcelDnaUtil.Application;
-        Workbook workbook = application.ActiveWorkbook;
-        Worksheet worksheet = workbook.ActiveSheet;
-
+   {
         // // Get a reference to the range
         // Range cellRange;
         // try
@@ -70,14 +65,26 @@ public class RibbonController : ExcelRibbon
         //     return new List<CellProperties>();
         // }
         //
-        var selectedRange = worksheet.Application.Selection;
+        var selectedRange = ExcelHelpers.Application.Selection;
+        var worksheet = ExcelHelpers.ActiveSheet;
 
         var startCell = selectedRange.Cells[1, 1];
         var endCell = selectedRange.Cells[selectedRange.Rows.Count, selectedRange.Columns.Count];
-        var range = worksheet.Range[startCell, endCell];
+        Range range = worksheet.Range[startCell, endCell];
 
         // var data = range.Value;
-        worksheet.Range["A1"].Value = range.Value;
-        MessageBox.Show("Data copied to dynamic array starting from A1");
+        // worksheet.Range["A1"].Value = range.Value;
+        // MessageBox.Show("Data copied to dynamic array starting from A1");
+        
+        // worksheet.Range["A1"].Resize[selectedRange.Rows.Count, selectedRange.Columns.Count].Value = range.Value;
+        var csv = range.GetRangePropertiesList().ToCsv().To2DArray();
+        if ((csv?.GetLength(0) ?? 0) == 0 || (csv?.GetLength(1) ?? 0) == 0)
+        {
+            worksheet.Range["A1"].Value = null;
+        }
+        else
+        {
+            worksheet.Range["A1"].Resize[csv.GetLength(0), csv.GetLength(1)].Value = csv;
+        }
     }
 }

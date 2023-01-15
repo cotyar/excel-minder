@@ -9,7 +9,7 @@ namespace ExcelMinder.Excel.Net6;
 
 static internal class ExcelHelpers
 {
-    public static List<CellProperties> GetRangePropertiesList(Range range)
+    public static List<CellProperties> GetRangePropertiesList(this Range range)
     {
         if (range == null) return new List<CellProperties>();
 
@@ -18,7 +18,6 @@ static internal class ExcelHelpers
 
         var result = new List<CellProperties>();
 
-        // Iterate through the cells in the range
         for (int i = 1; i <= rows; i++)
         {
             for (int j = 1; j <= cols; j++)
@@ -41,7 +40,7 @@ static internal class ExcelHelpers
                 result.Add(cellProperties);
             }
         }
-        // Return the result list
+
         return result;
     }
     
@@ -55,7 +54,13 @@ static internal class ExcelHelpers
         var target = xlApp.Range[
             ws.Cells[reference.RowFirst+1, reference.ColumnFirst+1],
             ws.Cells[reference.RowLast+1, reference.ColumnLast+1] ] as Range;
- 
+        
         return target;
     }
+
+    public static Application Application { get; } = (Application)ExcelDnaUtil.Application;
+    
+    public static Workbook ActiveWorkbook => Application.ActiveWorkbook;
+    
+    public static Worksheet ActiveSheet => Application.ActiveSheet;
 }
