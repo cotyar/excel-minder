@@ -56,7 +56,6 @@ public class ExcelFunctions
     [ExcelFunction(Description = "Lists the available stocks")]
     public static object[,] ListStocks()
     {
-        MessageBox.Show("Called", "Called", MessageBoxButtons.OK, MessageBoxIcon.Information);
         try
         {
             var response = Client.ListStocks(new Empty());
@@ -115,6 +114,14 @@ public class ExcelFunctions
         EnumerableExtensions.To2DArray(ExcelHelpers.GetRangePropertiesList((range as ExcelReference)?.ToRange())
             .Select(cp => new object[] { cp.ToJson() }).ToArray());
     
+    
+    [ExcelFunction(Description = "Provides a ticking clock")]
+    public static object dnaRtdClock_IExcelObservable(string param)
+    {
+        string functionName = "dnaRtdClock_IExcelObservable";
+        object paramInfo = param; // could be one parameter passed in directly, or an object array of all the parameters: new object[] {param1, param2}
+        return ExcelAsyncUtil.Observe(functionName, paramInfo, () => new ExcelObservableClock());
+    }
     
     [ExcelFunction(Description = "Provides a ticking clock")]
     public static object dnaRtdClock_IExcelObservable(string param)

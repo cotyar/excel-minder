@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using ExcelDna.Integration;
 
@@ -30,19 +29,5 @@ class ExcelObservableClock : IExcelObservable
         string now = DateTime.Now.ToString("HH:mm:ss.fff");
         foreach (var obs in _observers)
             obs.OnNext(now);
-    }
-
-    class ActionDisposable : IDisposable
-    {
-        Action _disposeAction;
-        public ActionDisposable(Action disposeAction)
-        {
-            _disposeAction = disposeAction;
-        }
-        public void Dispose()
-        {
-            _disposeAction();
-            Debug.WriteLine("Disposed");
-        }
     }
 }

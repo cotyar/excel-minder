@@ -3,6 +3,8 @@
     <PropertyGroup>
         <TargetFramework>net7.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
+        <ServerGarbageCollection>true</ServerGarbageCollection>
+        <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
         <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
         <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
         <IsPackable>false</IsPackable>
@@ -24,10 +26,16 @@
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.1" />
 
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Orleans.Server" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Orleans.Streaming" Version="7.0.0" />
+        
         <PackageReference Include="Grpc.AspNetCore" Version="2.51.0" />
         <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.51.0" />
         <PackageReference Include="Grpc.AspNetCore.Web" Version="2.51.0" />
@@ -36,8 +44,10 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-
+        
         <PackageReference Include="System.Text.Json" Version="7.0.1" />
+        <PackageReference Include="Protobuf.System.Text.Json" Version="1.1.0" />
+
     </ItemGroup>
 
     <ItemGroup>
@@ -46,6 +56,18 @@
     <ItemGroup>
         <!-- Don't publish the SPA source files, but do show them in the project files list -->
         <Content Remove="$(SpaRoot)**" />
+        <Content Include="..\..\data\digital_currency_list.csv">
+          <Link>Data\Files\digital_currency_list.csv</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\..\data\listing_status.csv">
+          <Link>Data\Files\listing_status.csv</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\..\data\physical_currency_list.csv">
+          <Link>Data\Files\physical_currency_list.csv</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
         <Content Include="..\.dockerignore">
           <Link>.dockerignore</Link>
         </Content>

@@ -6,6 +6,7 @@ using ExcelMinder.Data;
 using ExcelMinder.Models;
 using ExcelMinder.Services;
 using Microsoft.OpenApi.Models;
+using Orleans.Providers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,15 @@ builder.Services.AddIdentityServer()
 
 builder.Services.AddAuthentication()
     .AddIdentityServerJwt();
+
+builder.Host.UseOrleans((ctx, siloBuilder) =>
+{
+    siloBuilder.UseLocalhostClustering();
+    siloBuilder.AddMemoryGrainStorageAsDefault();
+    siloBuilder.AddMemoryStreams<DefaultMemoryMessageBodySerializer>("MemoryStreams");
+    siloBuilder.AddMemoryGrainStorage("PubSubStore");
+});
+
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

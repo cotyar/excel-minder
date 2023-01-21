@@ -2,16 +2,16 @@ namespace ExcelMinder;
 
 public static class SimulationHelper
 {
-    public static double[] RandomWalkSimulation (
-        double startPrice,
+    public static float[] RandomWalkSimulation (
+        float startPrice,
         int ticks,
-        double mean,
-        double stdDev)
+        float mean,
+        float stdDev)
     {
         var rand = new Random();
         
         return Enumerable.Range(0, ticks)
-            .Select(i => startPrice * Math.Exp(mean + stdDev * rand.Next()))
+            .Select(i => (float) (startPrice * Math.Exp(mean + stdDev * rand.Next())))
             .ToArray();
     }
 }
