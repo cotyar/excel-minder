@@ -17,6 +17,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="CsvHelper" Version="30.0.1" />
         <PackageReference Include="ExcelDna.AddIn" Version="1.6.0" />
         <PackageReference Include="ExcelDna.Integration" Version="1.6.0" />
         <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="7.0.1" />
@@ -33,6 +34,8 @@
 
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Orleans.OrleansGoogleUtils" Version="3.6.5" />
+        <PackageReference Include="Microsoft.Orleans.Serialization.SystemTextJson" Version="7.0.0" />
         <PackageReference Include="Microsoft.Orleans.Server" Version="7.0.0" />
         <PackageReference Include="Microsoft.Orleans.Streaming" Version="7.0.0" />
         

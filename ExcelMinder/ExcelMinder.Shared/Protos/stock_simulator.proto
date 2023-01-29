@@ -4,25 +4,46 @@ option csharp_namespace = "ExcelMinder.Shared";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
 
 service StockSimulator {
   // Returns a list of available stocks
-  rpc ListSymbols(SymbolListRequest) returns (StockList) {}
+  rpc ListSymbols(SymbolListRequest) returns (StockList) {
+    option (google.api.http) = {
+      post: "/v1/stock/list-symbols"
+      body: "*"
+    };
+  }
   rpc ListSymbolsUpdates(SymbolListRequest) returns (stream StockList) {}
 
   // Add a stock to the list of available stocks 
   rpc AddStocks(Stock) returns (google.protobuf.Empty) {}
 
   // Returns the current price of a stock
-  rpc GetStockPrice(StockRequest) returns (StockPrice) {}
-  rpc GetStockPriceUpdates(StockRequest) returns (stream StockPrice) {}
+  rpc GetStockPrice(StockRequest) returns (StockPrice) {
+    option (google.api.http) = {
+      post: "/v1/stock/stock-price"
+      body: "*"
+    };
+  }
+  rpc GetStockPriceUpdates(StockRequest) returns (stream StockPriceSnapshot) {}
 
   // Executes a trade on the stock market
   rpc ExecuteTrade(TradeRequest) returns (TradeResponse) {}
 
-  rpc LastTradeRequests(PageRequest) returns (TradeRequestList) {}
+  rpc LastTradeRequests(PageRequest) returns (TradeRequestList) {
+    option (google.api.http) = {
+      post: "/v1/trade/list-trade-orders"
+      body: "*"
+    };
+  }
   
-  rpc LastExecutedTrades(PageRequest) returns (TradeResponseList) {}
+  rpc LastExecutedTrades(PageRequest) returns (TradeResponseList) {
+    option (google.api.http) = {
+      post: "/v1/trade/last-executed-trades"
+      body: "*"
+    };
+  }
   
   
   // TODO: Move to a separate service
@@ -44,6 +65,7 @@ message StockRequest {
 
 message SymbolListRequest {
   string prefix = 1;
+  uint32 pageSize = 2;
 }
 
 message StockPrice {

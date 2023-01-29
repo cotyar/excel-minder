@@ -27,7 +27,7 @@ namespace ExcelMinder.Excel.Net6;
 /// </summary>
 public class ExcelFunctions
 {
-    [ExcelFunction(Description = "Simulates stock prices using a random walk model.")]
+    [ExcelFunction(Name = $"em_{nameof(SimulateStockPrices)}", Description = "Simulates stock prices using a random walk model.")]
     public static object[,] SimulateStockPrices(
         [ExcelArgument(Description = "The starting price of the stock.")] double startPrice,
         [ExcelArgument(Description = "The number of ticks to simulate.")] int ticks,
@@ -53,12 +53,14 @@ public class ExcelFunctions
     private static readonly GrpcChannel Channel = GrpcChannel.ForAddress("https://localhost:7038");
     private static readonly StockSimulator.StockSimulatorClient Client = new(Channel);
     
-    [ExcelFunction(Description = "Lists the available stocks")]
-    public static object[,] ListStocks()
+    [ExcelFunction(Name = $"em_{nameof(ListStocks)}", Description = "Lists the available stocks")]
+    public static object[,] ListStocks(
+        [ExcelArgument(Description = "The starting price of the stock.")] string prefix = "",
+        [ExcelArgument(Description = "The starting price of the stock.")] int pageSize = 20)
     {
         try
         {
-            var response = Client.ListStocks(new Empty());
+            var response = Client.ListSymbols(new SymbolListRequest { Prefix = prefix, PageSize = (uint) pageSize });
 
             var result = new object[response.Stocks.Count, 2];
             for (int i = 0; i < response.Stocks.Count; i++)
@@ -76,10 +78,10 @@ public class ExcelFunctions
         }
     }
 
-    [ExcelFunction(Description = "Gets the current price of a stock")]
+    [ExcelFunction(Name = $"em_{nameof(GetStockPrice)}", Description = "Gets the current price of a stock")]
     public static object GetStockPrice(string symbol) => Client.GetStockPrice(new StockRequest { Symbol = symbol })?.Price;
 
-    [ExcelFunction(Description = "Executes a trade on the stock market")]
+    [ExcelFunction(Name = $"em_{nameof(ExecuteTrade)}", Description = "Executes a trade on the stock market")]
     public static object ExecuteTrade(string symbol, long quantity, string type, double price)
     {
         var tradeType = type.ToLower() switch
@@ -108,26 +110,42 @@ public class ExcelFunctions
         };
     }
 
-    [ExcelFunction(Description =
+    [ExcelFunction(Name = $"em_{nameof(GetRangeProperties)}", Description =
         "Reads the background color, font, font style, text color, cell value, cell weight, cell height, border color, border thickness, border style of all cells in a range in an Excel spreadsheet")]
     public static object[,] GetRangeProperties([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range) =>
         EnumerableExtensions.To2DArray(ExcelHelpers.GetRangePropertiesList((range as ExcelReference)?.ToRange())
             .Select(cp => new object[] { cp.ToJson() }).ToArray());
     
     
-    [ExcelFunction(Description = "Provides a ticking clock")]
-    public static object dnaRtdClock_IExcelObservable(string param)
+    [ExcelFunction(Name = $"em_{nameof(ObservableClock)}", Description = "Provides a ticking clock")]
+    public static object ObservableClock(string param)
     {
-        string functionName = "dnaRtdClock_IExcelObservable";
+        string functionName = "em_{nameof(ObservableClock)}";
         object paramInfo = param; // could be one parameter passed in directly, or an object array of all the parameters: new object[] {param1, param2}
         return ExcelAsyncUtil.Observe(functionName, paramInfo, () => new ExcelObservableClock());
     }
     
-    [ExcelFunction(Description = "Provides a ticking clock")]
-    public static object dnaRtdClock_IExcelObservable(string param)
+    [ExcelFunction(Name = $"em_{nameof(ObservableStockPrices)}", Description = "Provides a ticking clock")]
+    public static object ObservableStockPrices([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range)
     {
-        string functionName = "dnaRtdClock_IExcelObservable";
-        object paramInfo = param; // could be one parameter passed in directly, or an object array of all the parameters: new object[] {param1, param2}
-        return ExcelAsyncUtil.Observe(functionName, paramInfo, () => new ExcelObservableClock());
+        string functionName = $"em_{{nameof(ObservableStockPrices)}}"; // TODO: Add range identificator
+        // object paramInfo = param; // could be one parameter passed in directly, or an object array of all the parameters: new object[] {param1, param2}
+        return ExcelAsyncUtil.Observe(functionName, "", () => new ExcelObservable<StockPriceSnapshot>(m => m.Prices[0].Price, 
+            Client.GetStockPriceUpdates(new StockRequest { Symbol = "AA" }).ResponseStream));
     }
+    
+    // [ExcelFunction(Name = $"em_{nameof(ObservableStockPrices)}", Description = "Provides a ticking clock")]
+    // public static object[,] ObservableStockPrices([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range)
+    // {
+    //     var symbols = range switch {
+    //         string s => s.Split(',').Select(s => s.Trim()).ToArray(),
+    //         // ExcelReference reference => (reference.ToRange().Value2 as object[,]).[],
+    //         _ => throw new ArgumentException("Invalid range")
+    //     };
+    //     
+    //     string functionName = $"em_{nameof(ObservableStockPrices)}_{string.Join("_", symbols)}"; // TODO: Add range identificator
+    //     // object paramInfo = param; // could be one parameter passed in directly, or an object array of all the parameters: new object[] {param1, param2}
+    //     return ExcelAsyncUtil.Observe(functionName, "", () => new ExcelObservable<StockPriceSnapshot>(m => m.Prices[0].Price, 
+    //         Client.GetStockPriceUpdates(new StockRequest { Symbol = "AA" }).ResponseStream));
+    // }
 }

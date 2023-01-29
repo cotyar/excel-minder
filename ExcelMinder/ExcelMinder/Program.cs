@@ -1,12 +1,16 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using ExcelMinder.Data;
 using ExcelMinder.Models;
+using ExcelMinder.Orleans.Interfaces;
 using ExcelMinder.Services;
+using Google.Protobuf;
 using Microsoft.OpenApi.Models;
 using Orleans.Providers;
+using Orleans.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,9 +32,19 @@ builder.Services.AddAuthentication()
 
 builder.Host.UseOrleans((ctx, siloBuilder) =>
 {
+    var jsonSerializerOptions = new JsonSerializerOptions();
+    jsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    jsonSerializerOptions.AddProtobufSupport();
+    
     siloBuilder.UseLocalhostClustering();
     siloBuilder.AddMemoryGrainStorageAsDefault();
-    siloBuilder.AddMemoryStreams<DefaultMemoryMessageBodySerializer>("MemoryStreams");
+    siloBuilder.Services.AddSerializer(serializerBuilder =>
+    {
+        serializerBuilder.AddJsonSerializer(
+            isSupported: type => typeof(IMessage).IsAssignableFrom(type), 
+            jsonSerializerOptions);
+    });
+    siloBuilder.AddMemoryStreams<DefaultMemoryMessageBodySerializer>(IStockViewerGrain.StreamProviderName);
     siloBuilder.AddMemoryGrainStorage("PubSubStore");
 });
 

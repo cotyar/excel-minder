@@ -1,32 +1,31 @@
+using CsvHelper;
 using ExcelMinder.Orleans.Interfaces;
 using ExcelMinder.Shared;
 using Orleans.Runtime;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Globalization;
 
 namespace ExcelMinder.Orleans.Grains;
 
-public class StockDataProviderGrain : IStockDataProviderGrain
+public class StockDataProviderGrain : Grain, IStockDataProviderGrain
 {
     private readonly IGrainFactory _grainFactory;
-
-    // A list of available stocks
-    private readonly Dictionary<string, Stock> _stocks = new(new List<Stock>
-    {
-        new() { Symbol = "AAPL", Name = "Apple Inc." },
-        new() { Symbol = "GOOG", Name = "Alphabet Inc." },
-        new() { Symbol = "MSFT", Name = "Microsoft Corporation" },
-        new() { Symbol = "FB", Name = "Facebook, Inc." },
-        new() { Symbol = "AMZN", Name = "Amazon.com, Inc." }
-    }.Select(stock => new KeyValuePair<string, Stock>(stock.Symbol, stock)));
-
+    
     public StockDataProviderGrain(IGrainFactory grainFactory)
     {
         _grainFactory = grainFactory;
     }
-    
-    public Task<Stock[]> SearchSymbols(string prefix) => 
-        Task.FromResult(_stocks.Values.Where(s => s.Symbol.StartsWith(prefix)).OrderBy(s => s.Symbol).ToArray());
 
-    public Task<IStockViewerGrain> GetStockViewer(string[] symbols) => 
+    public override async Task OnActivateAsync(CancellationToken cancellationToken)
+    {
+        await base.OnActivateAsync(cancellationToken);
+    }
+
+    public Task<ImmutableArray<Stock>> SearchSymbols(string prefix, uint pageSize) => 
+        _grainFactory.GetGrain<IRefDataProviderGrain>(IRefDataProviderGrain.DefaultGrainId).SearchSymbols(prefix, (int) pageSize);
+
+    public Task<IStockViewerGrain> GetStockViewer(ImmutableArray<string> symbols) => 
         Task.FromResult(_grainFactory.GetGrain<IStockViewerGrain>(string.Join(",", symbols.OrderBy(s => s))));
 
     public Task<StockPrice> Price(string symbol) => _grainFactory.GetGrain<IStockGrain>(symbol).Price();
