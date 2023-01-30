@@ -128,10 +128,10 @@ public class ExcelFunctions
     [ExcelFunction(Name = $"em_{nameof(ObservableStockPrices)}", Description = "Provides a ticking clock")]
     public static object ObservableStockPrices([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range)
     {
-        string functionName = $"em_{{nameof(ObservableStockPrices)}}"; // TODO: Add range identificator
+        string functionName = $"em_{nameof(ObservableStockPrices)}_{range}"; // TODO: Add range identifier
         // object paramInfo = param; // could be one parameter passed in directly, or an object array of all the parameters: new object[] {param1, param2}
         return ExcelAsyncUtil.Observe(functionName, "", () => new ExcelObservable<StockPriceSnapshot>(m => m.Prices[0].Price, 
-            Client.GetStockPriceUpdates(new StockRequest { Symbol = "AA" }).ResponseStream));
+            Client.GetStockPriceUpdates(new StockRequest { Symbol = $"{range}" }).ResponseStream));
     }
     
     // [ExcelFunction(Name = $"em_{nameof(ObservableStockPrices)}", Description = "Provides a ticking clock")]

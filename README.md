@@ -5,6 +5,9 @@ A scalable realtime financial data processing environment. Excel/Python/Web.
 ## Click the _gif_ below:
 ![img](Videos/Animation.gif)
 
+## Getting real-time price updates into 4 Excels simultaneously: 
+![img](Videos/4_Excels.gif)
+
 ## TODO: 
 - [x] Add ExcelDNA Project 
 - [x] Add Stock Simulator
@@ -14,9 +17,9 @@ A scalable realtime financial data processing environment. Excel/Python/Web.
 - [x] Add Python Project
 - [ ] Add Python FastAPI Project
 - [x] Add Python gRPC API Project
-- [ ] Add Python gRPC remote client Project
-- [ ] Add a simple Ribbon to the Excel Addin
+- [x] Add Python gRPC remote client Project
+- [x] Add a simple Ribbon to the Excel Addin
 - [ ] Refactor Simulation to realistic data
 - [x] Add connection to Alpha Vantage from Python
-- [ ] Add prices from Alpha Vantage 
+- [x] Add prices from Alpha Vantage 
 - [ ] Add Tensorflow-based Quantitative Analysis library from https://github.com/google/tf-quant-finance
