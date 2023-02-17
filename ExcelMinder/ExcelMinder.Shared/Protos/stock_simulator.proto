@@ -26,7 +26,14 @@ service StockSimulator {
       body: "*"
     };
   }
-  rpc GetStockPriceUpdates(StockRequest) returns (stream StockPriceSnapshot) {}
+  // Returns the current price of a stock
+  rpc GetStockPrices(StocksRequest) returns (StockPriceSnapshot) {
+    option (google.api.http) = {
+      post: "/v1/stock/stock-price"
+      body: "*"
+    };
+  }
+  rpc GetStockPriceUpdates(StocksRequest) returns (stream StockPriceSnapshot) {}
 
   // Executes a trade on the stock market
   rpc ExecuteTrade(TradeRequest) returns (TradeResponse) {}
@@ -80,6 +87,10 @@ message Stock {
 
 message StockRequest {
   string symbol = 1;
+}
+
+message StocksRequest {
+  repeated string symbols = 1;
 }
 
 message SymbolListRequest {

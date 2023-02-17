@@ -107,12 +107,12 @@ public class ExcelFunctions
             { "Type", type },
             { "Price", response.Price },
             { "Total Cost", response.TotalCost },
-            { "Timestamp", DateTime.Parse(response.Timestamp.ToDateTime().ToString()) }
+            { "Timestamp", response.Timestamp.ToDateTime() }
         };
     }
 
     [ExcelFunction(Name = $"em_{nameof(GetRangeProperties)}", Description =
-        "Reads the background color, font, font style, text color, cell value, cell weight, cell height, border color, border thickness, border style of all cells in a range in an Excel spreadsheet")]
+        "Reads the background color, font, font style, text color, cell value, cell weight, cell height, border color, border thickness, border style of all cells in a symbols in an Excel spreadsheet")]
     public static object[,] GetRangeProperties([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range) =>
         ((range as ExcelReference)?.ToRange()).GetRangePropertiesList().To2DArray();
     
@@ -125,24 +125,22 @@ public class ExcelFunctions
         return ExcelAsyncUtil.Observe(functionName, paramInfo, () => new ExcelObservableClock());
     }
     
-    private static object ObservableStockPricesOne(object stock)
-    {
-        var functionName = $"em_{nameof(ObservableStockPricesOne)}_{stock}"; // TODO: Add range identifier
-        // object paramInfo = param; // could be one parameter passed in directly, or an object array of all the parameters: new object[] {param1, param2}
-        return ExcelAsyncUtil.Observe(functionName, "", () => new ExcelObservable<StockPriceSnapshot>(m => m.Prices[0].Price, 
-            Client.GetStockPriceUpdates(new StockRequest { Symbol = $"{stock}" }).ResponseStream));
-    }
-    
     [ExcelFunction(Name = $"em_{nameof(ObservableStockPrices)}", Description = "Provides ticking stock prices")]
-    public static object[,] ObservableStockPrices([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range)
+    public static object ObservableStockPrices([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object symbols)
     {
-        var symbols = range switch {
-            string s => s.Split(',').Select(s => s.Trim()).To2DArray(),
-            ExcelReference reference => (reference.ToRange().Value2 as object[,]).Select(v => v.ToString()),
-            _ => throw new ArgumentException("Invalid range")
+        var symbolStrings = symbols switch
+        {
+            string s => s.Split(',').Select(s => s.Trim()).ToArray(),
+            ExcelReference reference => (reference.ToRange().Value as object[,])?.AsEnumerable().Select(v => v.ToString()).OrderBy(s => s).ToArray() ?? throw new ArgumentException("Invalid cell values"),
+            _ => throw new ArgumentException("Invalid symbols")
         };
-        
-        var results = symbols.Select(ObservableStockPricesOne);
-        return results;
+
+        var functionName = $"em_{nameof(ObservableStockPrices)}";
+        var callingCell = (ExcelReference)XlCall.Excel(XlCall.xlfCaller);
+        var paramInfo = new object[2];
+        paramInfo[0] = symbols;
+        paramInfo[1] = callingCell; 
+        return ExcelAsyncUtil.Observe(functionName, paramInfo, () => new ExcelObservable<StockPriceSnapshot>(m => m.Prices.Select(p => new object[] { p.Symbol, p.Price }).ToArray().To2DArray(),
+            Client.GetStockPriceUpdates(new StocksRequest { Symbols = { symbolStrings } }).ResponseStream));
     }
 }

@@ -69,10 +69,14 @@ public class StockViewerGrain : Grain, IStockViewerGrain
         if (existingPrice == null || Math.Abs(existingPrice.Price - price.Price) > 0.0001)
         {
             _priceSnapshot = _priceSnapshot.Clone(); 
-            var prices = _priceSnapshot.Prices.Where(s => s.Symbol != price.Symbol).ToImmutableArray();
+            var prices = _priceSnapshot
+                .Prices
+                .Where(s => s.Symbol != price.Symbol)
+                .Concat(new [] { price })
+                .OrderBy(p => p.Symbol)
+                .ToImmutableArray();
             _priceSnapshot.Prices.Clear();
             _priceSnapshot.Prices.AddRange(prices);
-            _priceSnapshot.Prices.Add(price.Clone());
             _updated = true;
         }
 

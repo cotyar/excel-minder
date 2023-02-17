@@ -55,9 +55,9 @@ static class EnumerableExtensions
     public static object[,] Select<T>(this T[,] data, Func<T, object> mapper)
     {
         var res = new object[data.GetLength(0), data.GetLength(1)];
-        for (var i = 0; i < data.GetLength(0); ++i)
+        for (var i = data.GetLowerBound(0); i <= data.GetUpperBound(0); ++i)
         {
-            for (var j = 0; j < data.GetLength(1); ++j)
+            for (var j = data.GetLowerBound(1); j <= data.GetUpperBound(1); ++j)
             {
                 res[i,j] = mapper(data[i,j]);
             }
@@ -66,12 +66,23 @@ static class EnumerableExtensions
         return res;
     }
     
+    public static IEnumerable<T> AsEnumerable<T>(this T[,] data)
+    {
+        for (var i = data.GetLowerBound(0); i <= data.GetUpperBound(0); ++i)
+        {
+            for (var j = data.GetLowerBound(1); j <= data.GetUpperBound(1); ++j)
+            {
+                yield return data[i,j];
+            }
+        }
+    }
+    
     public static object[,] Select<T>(this T[,] data, Func<T, int, int, object> mapper)
     {
         var res = new object[data.GetLength(0), data.GetLength(1)];
-        for (var i = 0; i < data.GetLength(0); ++i)
+        for (var i = data.GetLowerBound(0); i <= data.GetLowerBound(0); ++i)
         {
-            for (var j = 0; j < data.GetLength(1); ++j)
+            for (var j = data.GetLowerBound(1); j <= data.GetUpperBound(1); ++j)
             {
                 res[i,j] = mapper(data[i,j], i, j);
             }

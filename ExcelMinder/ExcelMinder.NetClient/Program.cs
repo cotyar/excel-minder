@@ -17,7 +17,7 @@ Console.WriteLine("<Finished Listing Stocks />");
 
 Console.WriteLine("<Getting Price Updates for 'AA' ... />");
 
-var stream = client.GetStockPriceUpdates(new StockRequest { Symbol = "AA" }).ResponseStream;
+var stream = client.GetStockPriceUpdates(new StocksRequest { Symbols = { "GOOG", "MSFT" }}).ResponseStream;
 
 while (await stream.MoveNext())
 {

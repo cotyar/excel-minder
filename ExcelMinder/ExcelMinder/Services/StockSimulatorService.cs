@@ -76,10 +76,24 @@ public class StockSimulatorService : StockSimulator.StockSimulatorBase
             throw new RpcException(new Status(StatusCode.NotFound, $"Stock not found: {request.Symbol}"));
         }
     }
-
-    public override async Task GetStockPriceUpdates(StockRequest request, IServerStreamWriter<StockPriceSnapshot> responseStream, ServerCallContext context)
+    
+    public override async Task<StockPriceSnapshot> GetStockPrices(StocksRequest request, ServerCallContext context)
     {
-        var stockViewer = await _clusterClient.GetGrain<IStockDataProviderGrain>(IStockDataProviderGrain.DefaultGrainId).GetStockViewer(new [] { request.Symbol }.ToImmutableArray());
+        try
+        {
+            var stockViewerGrain = await _clusterClient.GetGrain<IStockDataProviderGrain>(IStockDataProviderGrain.DefaultGrainId).GetStockViewer(request.Symbols.ToImmutableArray());
+            return await stockViewerGrain.PriceSnapshot();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Error during getting stock price for {request}", e);
+            throw new RpcException(new Status(StatusCode.NotFound, $"Stock not found: {request}"));
+        }
+    }
+
+    public override async Task GetStockPriceUpdates(StocksRequest request, IServerStreamWriter<StockPriceSnapshot> responseStream, ServerCallContext context)
+    {
+        var stockViewer = await _clusterClient.GetGrain<IStockDataProviderGrain>(IStockDataProviderGrain.DefaultGrainId).GetStockViewer(request.Symbols.ToImmutableArray());
         var streamId = await stockViewer.PriceUpdatesStreamId();
         var stream = _clusterClient
             .GetStreamProvider(IStockViewerGrain.StreamProviderName)
