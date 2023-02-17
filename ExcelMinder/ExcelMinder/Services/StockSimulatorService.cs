@@ -14,21 +14,6 @@ public class StockSimulatorService : StockSimulator.StockSimulatorBase
     private readonly IClusterClient _clusterClient;
     private readonly ILogger<StockSimulatorService> _logger;
 
-    // private static readonly Guid StreamId = Guid.NewGuid(); 
-    //
-    // // // A list of available stocks
-    // // private readonly ConcurrentDictionary<string, Stock> _stocks = new(new List<Stock>
-    // // {
-    // //     new() { Symbol = "AAPL", Name = "Apple Inc." },
-    // //     new() { Symbol = "GOOG", Name = "Alphabet Inc." },
-    // //     new() { Symbol = "MSFT", Name = "Microsoft Corporation" },
-    // //     new() { Symbol = "FB", Name = "Facebook, Inc." },
-    // //     new() { Symbol = "AMZN", Name = "Amazon.com, Inc." }
-    // // }.Select(stock => new KeyValuePair<string, Stock>(stock.Symbol, stock)));
-    //
-    // // A dictionary of stock prices, keyed by symbol
-    // private volatile StockPriceSnapshot _priceSnapshot = new [] { ("AAPL", 119.50f), ("GOOG", 1_700.00f), ("MSFT", 200.00f), ("FB", 250.00f), ("AMZN", 3_000.00f) }.ToStockSnapshot();
-    //
     // A list of trade requests
     private readonly ConcurrentDictionary<Timestamp, TradeRequest> _requests = new();
     
@@ -119,4 +104,13 @@ public class StockSimulatorService : StockSimulator.StockSimulatorBase
         var tradeResponses = _responses.Values.Skip(request.Page * request.PageSize).Take(request.PageSize).ToList();
         return Task.FromResult(new TradeResponseList { Trades = { tradeResponses } });
     }
+
+    public override async Task<Empty> AddExcelReport(ExcelReport request, ServerCallContext context)
+    {
+        await _clusterClient.GetGrain<IReportsGrain>(IReportsGrain.DefaultGrainId).AddReport(request);
+        return new();
+    }
+
+    public override async Task<ListExcelReportResponse> ListExcelReports(Empty request, ServerCallContext context) =>
+        new() { Reports = { await _clusterClient.GetGrain<IReportsGrain>(IReportsGrain.DefaultGrainId).GetReports() } };
 }

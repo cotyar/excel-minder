@@ -44,8 +44,27 @@ service StockSimulator {
       body: "*"
     };
   }
+
   
+  rpc ListExcelReports(google.protobuf.Empty) returns (ListExcelReportResponse) {
+    option (google.api.http) = {
+      get: "/v1/reports/list-excel-reports"
+    };
+  }
+
+  rpc AddExcelReport(ExcelReport) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/reports/add-excel-report"
+      body: "*"
+    };
+  }
   
+  rpc DeleteExcelReport(DeleteExcelReportRequest) returns (DeleteExcelReportResponse) {
+    option (google.api.http) = {
+      delete: "/v1/reports/delete-excel-report"
+    };
+  }
+
   // TODO: Move to a separate service
   
 }
@@ -175,3 +194,15 @@ message ExcelReport {
   string report_id = 1;
   repeated CellProperties cell_properties = 2;
 } 
+
+message ListExcelReportResponse {
+  repeated ExcelReport reports = 1;
+}
+
+message DeleteExcelReportRequest {
+  string report_id = 1;
+}
+
+message DeleteExcelReportResponse {
+  bool deleted = 1;
+}

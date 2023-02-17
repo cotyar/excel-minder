@@ -11,6 +11,7 @@ using Microsoft.Office.Interop.Excel;
 using Application = Microsoft.Office.Interop.Excel.Application;
 using Range = Microsoft.Office.Interop.Excel.Range;
 using ExcelDna.Integration.Rtd;
+using ExcelDna.Registration;
 
 namespace ExcelMinder.Excel.Net6;
 
@@ -55,8 +56,8 @@ public class ExcelFunctions
     
     [ExcelFunction(Name = $"em_{nameof(ListStocks)}", Description = "Lists the available stocks")]
     public static object[,] ListStocks(
-        [ExcelArgument(Description = "The starting price of the stock.")] string prefix = "",
-        [ExcelArgument(Description = "The starting price of the stock.")] int pageSize = 20)
+        [ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] string prefix = "",
+        [ExcelArgument(Description = "The starting price of the stock.", AllowReference = false)] int pageSize = 20)
     {
         try
         {
@@ -113,8 +114,7 @@ public class ExcelFunctions
     [ExcelFunction(Name = $"em_{nameof(GetRangeProperties)}", Description =
         "Reads the background color, font, font style, text color, cell value, cell weight, cell height, border color, border thickness, border style of all cells in a range in an Excel spreadsheet")]
     public static object[,] GetRangeProperties([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range) =>
-        EnumerableExtensions.To2DArray(ExcelHelpers.GetRangePropertiesList((range as ExcelReference)?.ToRange())
-            .Select(cp => new object[] { cp.ToJson() }).ToArray());
+        ((range as ExcelReference)?.ToRange()).GetRangePropertiesList().To2DArray();
     
     
     [ExcelFunction(Name = $"em_{nameof(ObservableClock)}", Description = "Provides a ticking clock")]
@@ -125,27 +125,24 @@ public class ExcelFunctions
         return ExcelAsyncUtil.Observe(functionName, paramInfo, () => new ExcelObservableClock());
     }
     
-    [ExcelFunction(Name = $"em_{nameof(ObservableStockPrices)}", Description = "Provides a ticking clock")]
-    public static object ObservableStockPrices([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range)
+    private static object ObservableStockPricesOne(object stock)
     {
-        string functionName = $"em_{nameof(ObservableStockPrices)}_{range}"; // TODO: Add range identifier
+        var functionName = $"em_{nameof(ObservableStockPricesOne)}_{stock}"; // TODO: Add range identifier
         // object paramInfo = param; // could be one parameter passed in directly, or an object array of all the parameters: new object[] {param1, param2}
         return ExcelAsyncUtil.Observe(functionName, "", () => new ExcelObservable<StockPriceSnapshot>(m => m.Prices[0].Price, 
-            Client.GetStockPriceUpdates(new StockRequest { Symbol = $"{range}" }).ResponseStream));
+            Client.GetStockPriceUpdates(new StockRequest { Symbol = $"{stock}" }).ResponseStream));
     }
     
-    // [ExcelFunction(Name = $"em_{nameof(ObservableStockPrices)}", Description = "Provides a ticking clock")]
-    // public static object[,] ObservableStockPrices([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range)
-    // {
-    //     var symbols = range switch {
-    //         string s => s.Split(',').Select(s => s.Trim()).ToArray(),
-    //         // ExcelReference reference => (reference.ToRange().Value2 as object[,]).[],
-    //         _ => throw new ArgumentException("Invalid range")
-    //     };
-    //     
-    //     string functionName = $"em_{nameof(ObservableStockPrices)}_{string.Join("_", symbols)}"; // TODO: Add range identificator
-    //     // object paramInfo = param; // could be one parameter passed in directly, or an object array of all the parameters: new object[] {param1, param2}
-    //     return ExcelAsyncUtil.Observe(functionName, "", () => new ExcelObservable<StockPriceSnapshot>(m => m.Prices[0].Price, 
-    //         Client.GetStockPriceUpdates(new StockRequest { Symbol = "AA" }).ResponseStream));
-    // }
+    [ExcelFunction(Name = $"em_{nameof(ObservableStockPrices)}", Description = "Provides ticking stock prices")]
+    public static object[,] ObservableStockPrices([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range)
+    {
+        var symbols = range switch {
+            string s => s.Split(',').Select(s => s.Trim()).To2DArray(),
+            ExcelReference reference => (reference.ToRange().Value2 as object[,]).Select(v => v.ToString()),
+            _ => throw new ArgumentException("Invalid range")
+        };
+        
+        var results = symbols.Select(ObservableStockPricesOne);
+        return results;
+    }
 }

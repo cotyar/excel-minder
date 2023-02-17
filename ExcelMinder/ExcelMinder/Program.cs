@@ -57,6 +57,13 @@ builder.Services.AddGrpc().AddJsonTranscoding();
 builder.Services.AddGrpcReflection();
 builder.Services.AddGrpcSwagger();
 builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "gRPC Transcoding", Version = "1" }));
+builder.Services.AddCors(o => o.AddPolicy("AllowAll", corsPolicyBuilder =>
+{
+    corsPolicyBuilder.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
+}));
 
 var app = builder.Build();
 
@@ -75,6 +82,9 @@ else
 app.UseStaticFiles();
 app.UseRouting();
 
+app.UseGrpcWeb();
+app.UseCors();
+
 app.UseAuthentication();
 app.UseIdentityServer();
 app.UseAuthorization();
@@ -91,7 +101,7 @@ app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "v1"));
 
 // Configure the HTTP request pipeline.
 app.MapGrpcService<GreeterService>();
-app.MapGrpcService<StockSimulatorService>();
+app.MapGrpcService<StockSimulatorService>().EnableGrpcWeb().RequireCors("AllowAll");
 app.MapGrpcReflectionService();
 
 app.MapGet("/", () => "Boom");
