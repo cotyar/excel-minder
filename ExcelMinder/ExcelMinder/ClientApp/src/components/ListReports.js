@@ -7,6 +7,7 @@ import {ListExcelReportResponse} from "./generated/stock_simulator_pb";
 const ListReports = ({ reports }) => {
     const [selectedReport, setSelectedReport] = useState(undefined);
 
+    console.log("reports: ", reports)
     console.log("selectedReport: ", selectedReport)
     
     return (
@@ -14,7 +15,7 @@ const ListReports = ({ reports }) => {
             <ListGroup>
                 {reports.reports.map((report, i) => (
                     <ListGroupItem
-                        key={report.report_id + i}
+                        key={report.report_id}
                         onClick={() => setSelectedReport(report)}
                         action
                         active={selectedReport === report}
@@ -23,10 +24,10 @@ const ListReports = ({ reports }) => {
                     </ListGroupItem>
                 ))}
             </ListGroup>
-            {selectedReport && (
+            {selectedReport !== undefined && (
                 <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                     {selectedReport.cellProperties.map((properties, i) => (
-                        <ListReportCell key={properties.cell_value + i} properties={properties} />
+                        <ListReportCell key={properties.row * 10000 + i} properties={properties} />
                       // <h2>BBB</h2>
                     ))}
                 </div>

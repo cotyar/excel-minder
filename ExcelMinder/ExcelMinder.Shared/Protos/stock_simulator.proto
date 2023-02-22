@@ -191,19 +191,24 @@ message CellProperties {
     BorderProperties left = 4;
     BorderProperties right = 5;
   }
-  double background_color = 1;
-  string font = 2;
-  FontStyle font_style = 3;
-  double text_color = 4;
-  string cell_value = 5;
-  double cell_weight = 6;
-  double cell_height = 7;
-  Border border = 8;
+  int32 row = 1;
+  int32 column = 2;
+  double text_color = 3;
+  double background_color = 4;
+  string font = 5;
+  double font_size = 6;
+  FontStyle font_style = 7;
+  string cell_value = 8;
+  double column_weight = 9;
+  double row_height = 10;
+  Border border = 11;
 }
 
 message ExcelReport {
   string report_id = 1;
-  repeated CellProperties cell_properties = 2;
+  int32 row_count = 2;
+  int32 column_count = 3;
+  repeated CellProperties cell_properties = 4;
 } 
 
 message ListExcelReportResponse {

@@ -39,6 +39,7 @@ const ListReportCell = ({ properties }) => {
     const style = {
         backgroundColor: '' + backgroundColor,
         fontFamily: font,
+        fontSize: `${fontStyle.size}px`,
         fontWeight: fontStyle.bold ? 'bold' : 'normal',
         fontStyle: fontStyle.italic ? 'italic' : 'normal',
         textDecoration: (fontStyle.underline && fontStyle.underline !== -4142) ? 'underline' : 'none',

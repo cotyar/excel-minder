@@ -113,10 +113,13 @@ public class ExcelFunctions
 
     [ExcelFunction(Name = $"em_{nameof(GetRangeProperties)}", Description =
         "Reads the background color, font, font style, text color, cell value, cell weight, cell height, border color, border thickness, border style of all cells in a symbols in an Excel spreadsheet")]
-    public static object[,] GetRangeProperties([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range) =>
-        ((range as ExcelReference)?.ToRange()).GetRangePropertiesList().To2DArray();
-    
-    
+    public static object[,] GetRangeProperties([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range)
+    {
+        var (_, _, props) = ((range as ExcelReference)?.ToRange()).GetRangePropertiesList();
+        return props.To2DArray();
+    }
+
+
     [ExcelFunction(Name = $"em_{nameof(ObservableClock)}", Description = "Provides a ticking clock")]
     public static object ObservableClock(string param)
     {

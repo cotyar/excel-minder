@@ -11,31 +11,34 @@ namespace ExcelMinder.Excel.Net6;
 
 static internal class ExcelHelpers
 {
-    public static List<CellProperties> GetRangePropertiesList(this Range range)
+    public static (int, int, List<CellProperties>) GetRangePropertiesList(this Range range)
     {
-        if (range == null) return new List<CellProperties>();
+        if (range == null) return (0, 0, new List<CellProperties>());
 
         LineStyle ToLineStyle(object style) => style switch
         {
             DBNull => LineStyle.None,
-            XlLineStyle.xlContinuous => LineStyle.Solid,
-            XlLineStyle.xlDash => LineStyle.Dashed,
-            XlLineStyle.xlDashDot => LineStyle.DashDotted,
-            XlLineStyle.xlDashDotDot => LineStyle.DashDotDotted,
-            XlLineStyle.xlDot => LineStyle.Dotted,
-            XlLineStyle.xlDouble => LineStyle.Double,
-            XlLineStyle.xlLineStyleNone => LineStyle.None,
-            XlLineStyle.xlSlantDashDot => LineStyle.SlantDashDotted,
+            (int) XlLineStyle.xlContinuous => LineStyle.Solid,
+            (int) XlLineStyle.xlDash => LineStyle.Dashed,
+            (int) XlLineStyle.xlDashDot => LineStyle.DashDotted,
+            (int) XlLineStyle.xlDashDotDot => LineStyle.DashDotDotted,
+            (int) XlLineStyle.xlDot => LineStyle.Dotted,
+            (int) XlLineStyle.xlDouble => LineStyle.Double,
+            (int) XlLineStyle.xlLineStyleNone => LineStyle.None,
+            (int) XlLineStyle.xlSlantDashDot => LineStyle.SlantDashDotted,
             _ => LineStyle.None
         };
 
-        double ToThickness(object width) => width switch
+        double ToThickness(object width, object style) => (width, ToLineStyle(style)) switch
         {
-            DBNull => 0,
-            int w and >= 0 => w,
-            double w and >= 0 => w,
+            (_, LineStyle.None) => 0,
+            (DBNull, _) => 0,
+            (int w and >= 0, _) => w,
+            (double w and >= 0, _) => w,
+            var (_, l) when l != LineStyle.None => 1,
             _ => 0
         };
+
 
         int rows = range.Rows.Count;
         int cols = range.Columns.Count;
@@ -55,40 +58,42 @@ static internal class ExcelHelpers
                 var borderRight = borders[XlBordersIndex.xlEdgeRight];
                 var cellProperties = new CellProperties
                 {
+                    Row = i,
+                    Column = j,
                     BackgroundColor = currentCell.Interior.Color ?? 0,
                     TextColor = currentCell.Font.Color ?? 0,
-                    CellWeight = currentCell.ColumnWidth ?? 0,
-                    CellHeight = currentCell.RowHeight ?? 0,
+                    ColumnWeight = currentCell.ColumnWidth ?? 0,
+                    RowHeight = currentCell.RowHeight ?? 0,
                     Border = new CellProperties.Types.Border
                     {
                         All = new BorderProperties
                         {
                             Color = borders.Color ?? 0,
-                            Thickness = ToThickness(borders.Weight),
+                            Thickness = ToThickness(borders.Weight, borders.LineStyle),
                             LineStyle = ToLineStyle(borders.LineStyle)
                         },
                         Top = new BorderProperties
                         {
                             Color = borderTop.Color ?? 0,
-                            Thickness = ToThickness(borderTop.Weight),
+                            Thickness = ToThickness(borderTop.Weight, borderTop.LineStyle),
                             LineStyle = ToLineStyle(borderTop.LineStyle)
                         },
                         Bottom = new BorderProperties
                         {
                             Color = borderBottom.Color ?? 0,
-                            Thickness = ToThickness(borderBottom.Weight),
+                            Thickness = ToThickness(borderBottom.Weight, borderBottom.LineStyle),
                             LineStyle = ToLineStyle(borderBottom.LineStyle)
                         },
                         Left = new BorderProperties
                         {
                             Color = borderLeft.Color ?? 0,
-                            Thickness = ToThickness(borderLeft.Weight),
+                            Thickness = ToThickness(borderLeft.Weight, borderLeft.LineStyle),
                             LineStyle = ToLineStyle(borderLeft.LineStyle)
                         },
                         Right = new BorderProperties
                         {
                             Color = borderRight.Color ?? 0,
-                            Thickness = ToThickness(borderRight.Weight),
+                            Thickness = ToThickness(borderRight.Weight, borderRight.LineStyle),
                             LineStyle = ToLineStyle(borderRight.LineStyle)
                         }
                     }
@@ -97,6 +102,7 @@ static internal class ExcelHelpers
                 if (currentCell.Font?.Name != null)
                 {
                     cellProperties.Font = currentCell.Font.Name;
+                    cellProperties.FontSize = currentCell.Font.Size;
                     cellProperties.FontStyle = new FontStyle
                     {
                         Bold = currentCell.Font.Bold,
@@ -111,7 +117,7 @@ static internal class ExcelHelpers
             }
         }
 
-        return result;
+        return (rows, cols, result);
     }
     
     public static Range ToRange(this ExcelReference reference)
