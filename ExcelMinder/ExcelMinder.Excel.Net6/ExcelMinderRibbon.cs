@@ -56,7 +56,13 @@ public class RibbonController : ExcelRibbon
         worksheet.Range["A2"].Apply(csv);
 
         var reportId = $"Report-{DateTimeOffset.Now:O}";
-        Client.AddExcelReport(new ExcelReport { ReportId = reportId, CellProperties = { rangePropertiesList }});
+        Client.AddExcelReport(new ExcelReport
+        {
+            ReportId = reportId, 
+            RowCount = rows,
+            ColumnCount = cols,
+            CellProperties = { rangePropertiesList }
+        });
         
         MessageBox.Show($"Report '{reportId}' has been created and sent to the server.");
    }
