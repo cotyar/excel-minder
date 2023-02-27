@@ -127,4 +127,9 @@ public class StockSimulatorService : StockSimulator.StockSimulatorBase
 
     public override async Task<ListExcelReportResponse> ListExcelReports(Empty request, ServerCallContext context) =>
         new() { Reports = { await _clusterClient.GetGrain<IReportsGrain>(IReportsGrain.DefaultGrainId).GetReports() } };
+
+    public override Task ExcelReportsUpdates(Empty request, IServerStreamWriter<ListExcelReportResponse> responseStream, ServerCallContext context)
+    {
+        return base.ExcelReportsUpdates(request, responseStream, context);
+    }
 }

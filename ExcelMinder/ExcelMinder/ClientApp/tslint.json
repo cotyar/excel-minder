@@ -1,0 +1,9 @@
+{
+  "extends": "tslint:latest",
+  "linterOptions": {
+    "exclude": [
+      "src/components/generated/**/*",
+      "src/components/generated/google/protobuf/timestamp.ts"
+    ]
+  }
+}

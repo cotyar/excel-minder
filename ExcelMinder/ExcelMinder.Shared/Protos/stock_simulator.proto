@@ -26,10 +26,10 @@ service StockSimulator {
       body: "*"
     };
   }
-  // Returns the current price of a stock
+  // Returns the current price snapshot of a stock
   rpc GetStockPrices(StocksRequest) returns (StockPriceSnapshot) {
     option (google.api.http) = {
-      post: "/v1/stock/stock-price"
+      post: "/v1/stock/stock-prices"
       body: "*"
     };
   }
@@ -58,6 +58,8 @@ service StockSimulator {
       get: "/v1/reports/list-excel-reports"
     };
   }
+
+  rpc ExcelReportsUpdates(google.protobuf.Empty) returns (stream ListExcelReportResponse) {}
 
   rpc AddExcelReport(ExcelReport) returns (google.protobuf.Empty) {
     option (google.api.http) = {
@@ -179,9 +181,15 @@ message CellProperties {
     DASH_DOT_DOTTED = 6;
     SLANT_DASH_DOTTED = 7;
   }
+  message Color {
+    float red = 1;
+    float green = 2;
+    float blue = 3;
+    float alpha = 4;
+  }
   message Border {
     message BorderProperties {
-      double color = 1;
+      Color color = 1;
       double thickness = 2;
       LineStyle lineStyle = 3;
     }
@@ -193,8 +201,8 @@ message CellProperties {
   }
   int32 row = 1;
   int32 column = 2;
-  double text_color = 3;
-  double background_color = 4;
+  Color text_color = 3;
+  Color background_color = 4;
   string font = 5;
   double font_size = 6;
   FontStyle font_style = 7;

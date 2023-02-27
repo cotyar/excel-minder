@@ -12,6 +12,8 @@ using Application = Microsoft.Office.Interop.Excel.Application;
 using Range = Microsoft.Office.Interop.Excel.Range;
 using ExcelDna.Integration.Rtd;
 using ExcelDna.Registration;
+using System.Runtime.InteropServices;
+using System.Reflection;
 
 namespace ExcelMinder.Excel.Net6;
 
@@ -56,12 +58,25 @@ public class ExcelFunctions
     
     [ExcelFunction(Name = $"em_{nameof(ListStocks)}", Description = "Lists the available stocks")]
     public static object[,] ListStocks(
-        [ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] string prefix = "",
-        [ExcelArgument(Description = "The starting price of the stock.", AllowReference = false)] int pageSize = 20)
+        [ExcelArgument(Description = "The prefix of the stock name.", AllowReference = true)][Optional] object prefix,
+        [ExcelArgument(Description = "Number of stocks to display.", AllowReference = false)][Optional] object pageSize)
     {
+        var prefixStr = prefix switch
+        {
+            Missing => "",
+            string s => s,
+            _ => ""
+        };
+
+        var pageSizeInt = pageSize switch
+        {
+            int size => size,
+            _ => 20
+        };
+
         try
         {
-            var response = Client.ListSymbols(new SymbolListRequest { Prefix = prefix, PageSize = (uint) pageSize });
+            var response = Client.ListSymbols(new SymbolListRequest { Prefix = prefixStr, PageSize = (uint) pageSizeInt });
 
             var result = new object[response.Stocks.Count, 2];
             for (int i = 0; i < response.Stocks.Count; i++)
@@ -143,7 +158,12 @@ public class ExcelFunctions
         var paramInfo = new object[2];
         paramInfo[0] = symbols;
         paramInfo[1] = callingCell; 
-        return ExcelAsyncUtil.Observe(functionName, paramInfo, () => new ExcelObservable<StockPriceSnapshot>(m => m.Prices.Select(p => new object[] { p.Symbol, p.Price }).ToArray().To2DArray(),
-            Client.GetStockPriceUpdates(new StocksRequest { Symbols = { symbolStrings } }).ResponseStream));
+        return ExcelAsyncUtil.Observe(functionName, paramInfo, () =>
+        {
+            var excelObservable = new ExcelObservable<StockPriceSnapshot>(
+                m => m.Prices.Select(p => new object[] { p.Symbol, p.Price }).ToArray().To2DArray(),
+                Client.GetStockPriceUpdates(new StocksRequest { Symbols = { symbolStrings } }).ResponseStream);
+            return excelObservable;
+        });
     }
 }

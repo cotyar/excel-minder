@@ -9,7 +9,7 @@ using Range = Microsoft.Office.Interop.Excel.Range;
 
 namespace ExcelMinder.Excel.Net6;
 
-static internal class ExcelHelpers
+internal static class ExcelHelpers
 {
     public static (int, int, List<CellProperties>) GetRangePropertiesList(this Range range)
     {
@@ -30,15 +30,29 @@ static internal class ExcelHelpers
         };
 
         double ToThickness(object width, object style) => (width, ToLineStyle(style)) switch
-        {
-            (_, LineStyle.None) => 0,
-            (DBNull, _) => 0,
-            (int w and >= 0, _) => w,
-            (double w and >= 0, _) => w,
-            var (_, l) when l != LineStyle.None => 1,
-            _ => 0
-        };
+            {
+                (_, LineStyle.None) => 0,
+                (DBNull, _) => 0,
+                (int w and >= 0, _) => w,
+                (double w and >= 0, _) => w,
+                var (_, l) when l != LineStyle.None => 1,
+                _ => 0
+            };
 
+        Color ToColor(object color)
+        {
+            var c = color switch
+            {
+                DBNull => 0,
+                int cc => cc,
+                double cc => (int)cc,
+                _ => 0
+            };
+            var s = $"{c:X}";
+            while (s.Length < 6) s = $"{s}0";
+
+            return new Color { Red = Convert.ToByte(s[..2], 16), Green = Convert.ToByte(s[2..4], 16), Blue = Convert.ToByte(s[4..6], 16) };
+        }
 
         int rows = range.Rows.Count;
         int cols = range.Columns.Count;
@@ -60,39 +74,39 @@ static internal class ExcelHelpers
                 {
                     Row = i,
                     Column = j,
-                    BackgroundColor = currentCell.Interior.Color ?? 0,
-                    TextColor = currentCell.Font.Color ?? 0,
+                    BackgroundColor = ToColor(currentCell.Interior.Color),
+                    TextColor = ToColor(currentCell.Font.Color),
                     ColumnWeight = currentCell.ColumnWidth ?? 0,
                     RowHeight = currentCell.RowHeight ?? 0,
                     Border = new CellProperties.Types.Border
                     {
                         All = new BorderProperties
                         {
-                            Color = borders.Color ?? 0,
+                            Color = ToColor(borders.Color),
                             Thickness = ToThickness(borders.Weight, borders.LineStyle),
                             LineStyle = ToLineStyle(borders.LineStyle)
                         },
                         Top = new BorderProperties
                         {
-                            Color = borderTop.Color ?? 0,
+                            Color = ToColor(borderTop.Color),
                             Thickness = ToThickness(borderTop.Weight, borderTop.LineStyle),
                             LineStyle = ToLineStyle(borderTop.LineStyle)
                         },
                         Bottom = new BorderProperties
                         {
-                            Color = borderBottom.Color ?? 0,
+                            Color = ToColor(borderBottom.Color),
                             Thickness = ToThickness(borderBottom.Weight, borderBottom.LineStyle),
                             LineStyle = ToLineStyle(borderBottom.LineStyle)
                         },
                         Left = new BorderProperties
                         {
-                            Color = borderLeft.Color ?? 0,
+                            Color = ToColor(borderLeft.Color),
                             Thickness = ToThickness(borderLeft.Weight, borderLeft.LineStyle),
                             LineStyle = ToLineStyle(borderLeft.LineStyle)
                         },
                         Right = new BorderProperties
                         {
-                            Color = borderRight.Color ?? 0,
+                            Color = ToColor(borderRight.Color),
                             Thickness = ToThickness(borderRight.Weight, borderRight.LineStyle),
                             LineStyle = ToLineStyle(borderRight.LineStyle)
                         }
@@ -129,7 +143,7 @@ static internal class ExcelHelpers
         var ws = xlApp.Sheets[item] as Worksheet;
         var target = xlApp.Range[
             ws.Cells[reference.RowFirst+1, reference.ColumnFirst+1],
-            ws.Cells[reference.RowLast+1, reference.ColumnLast+1] ] as Range;
+            ws.Cells[reference.RowLast+1, reference.ColumnLast+1] ];
         
         return target;
     }
