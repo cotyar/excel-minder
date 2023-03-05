@@ -6,6 +6,7 @@ using Microsoft.Office.Interop.Excel;
 using static ExcelMinder.Shared.CellProperties.Types;
 using static ExcelMinder.Shared.CellProperties.Types.Alignment.Types;
 using static ExcelMinder.Shared.CellProperties.Types.Border.Types;
+using Border = Microsoft.Office.Interop.Excel.Border;
 using Range = Microsoft.Office.Interop.Excel.Range;
 
 namespace ExcelMinder.Excel.Net6;
@@ -30,14 +31,14 @@ internal static class ExcelHelpers
             _ => LineStyle.None
         };
         
-        HorizontalAlignment ToHorizontalAlignment(object alignment) => alignment switch
+        HorizontalAlignment ToHorizontalAlignment(object alignment, object value) => alignment switch
         {
             DBNull => HorizontalAlignment.Left,
             (int) XlHAlign.xlHAlignCenter => HorizontalAlignment.Center,
             (int) XlHAlign.xlHAlignCenterAcrossSelection => HorizontalAlignment.Center,
             (int) XlHAlign.xlHAlignDistributed => HorizontalAlignment.Center,
             (int) XlHAlign.xlHAlignFill => HorizontalAlignment.Center,
-            (int) XlHAlign.xlHAlignGeneral => HorizontalAlignment.Left,
+            (int) XlHAlign.xlHAlignGeneral => value is string ? HorizontalAlignment.Left : HorizontalAlignment.Right,
             (int) XlHAlign.xlHAlignJustify => HorizontalAlignment.Justify,
             (int) XlHAlign.xlHAlignLeft => HorizontalAlignment.Left,
             (int) XlHAlign.xlHAlignRight => HorizontalAlignment.Right,
@@ -59,9 +60,23 @@ internal static class ExcelHelpers
             {
                 (_, LineStyle.None) => 0,
                 (DBNull, _) => 0,
-                (int w and >= 0, _) => w,
-                (double w and >= 0, _) => w,
-                var (_, l) when l != LineStyle.None => 1,
+                (int w, _) => w switch
+                {
+                    (int) XlBorderWeight.xlHairline => 3,
+                    (int) XlBorderWeight.xlMedium => 2,
+                    (int) XlBorderWeight.xlThin => 1,
+                    (int) XlBorderWeight.xlThick => 4,
+                    _ => 0
+                },
+                (double w, _) => (int) w switch
+                {
+                    (int) XlBorderWeight.xlHairline => 3,
+                    (int) XlBorderWeight.xlMedium => 2,
+                    (int) XlBorderWeight.xlThin => 1,
+                    (int) XlBorderWeight.xlThick => 4,
+                    _ => 0
+                },
+                var (_, l) when l != LineStyle.None => 0,
                 _ => 0
             };
 
@@ -91,12 +106,11 @@ internal static class ExcelHelpers
             {
                 var currentCell = range.Cells[i, j];
 
-                var borders = currentCell.Borders;
-                // NOTE: The flip of the borders is NOT an error! (weird, I know ...)
-                var borderTop = borders[XlBordersIndex.xlEdgeBottom];
-                var borderBottom = borders[XlBordersIndex.xlEdgeTop]; 
-                var borderLeft = borders[XlBordersIndex.xlEdgeRight];
-                var borderRight = borders[XlBordersIndex.xlEdgeLeft]; 
+                Borders borders = currentCell.Borders;
+                Border borderTop = borders[XlBordersIndex.xlEdgeTop];
+                Border borderBottom = borders[XlBordersIndex.xlEdgeBottom]; 
+                Border borderLeft = borders[XlBordersIndex.xlEdgeLeft]; 
+                Border borderRight = borders[XlBordersIndex.xlEdgeRight];
                 var cellProperties = new CellProperties
                 {
                     Row = i - 1,
@@ -140,7 +154,7 @@ internal static class ExcelHelpers
                     },
                     Alignment = new Alignment
                     {
-                        Horizontal = ToHorizontalAlignment(currentCell.HorizontalAlignment), 
+                        Horizontal = ToHorizontalAlignment(currentCell.HorizontalAlignment, currentCell.Value), 
                         Vertical = ToVerticalAlignment(currentCell.VerticalAlignment)
                     }
                 };

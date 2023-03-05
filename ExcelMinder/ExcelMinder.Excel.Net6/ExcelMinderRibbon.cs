@@ -41,15 +41,16 @@ public class RibbonController : ExcelRibbon
     }
 
     public void OnSendReport(IRibbonControl control)
-   {
-       var selectedRange = ExcelHelpers.Application.Selection;
+    {
+        Range selectedRange = ExcelHelpers.Application.Selection;
         var worksheet = ExcelHelpers.ActiveSheet;
 
         var startCell = selectedRange.Cells[1, 1];
         var endCell = selectedRange.Cells[selectedRange.Rows.Count, selectedRange.Columns.Count];
         Range range = worksheet.Range[startCell, endCell];
 
-        var (rows, cols, rangePropertiesList) = range.GetRangePropertiesList();
+        // var (rows, cols, rangePropertiesList) = range.GetRangePropertiesList();
+        var (rows, cols, rangePropertiesList) = selectedRange.GetRangePropertiesList();
         var csv = rangePropertiesList.ToCsv().To2DArray();
         worksheet.Range["A1"].Value = rows;
         worksheet.Range["B1"].Value = cols;

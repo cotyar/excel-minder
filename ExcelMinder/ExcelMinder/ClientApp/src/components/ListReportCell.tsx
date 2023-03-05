@@ -1,5 +1,10 @@
 import React, { DetailedHTMLProps, HTMLAttributes } from 'react'
-import { CellProperties, CellProperties_Color, CellProperties_LineStyle } from "../generated/stock_simulator"
+import {
+    CellProperties,
+    CellProperties_Alignment_HorizontalAlignment, CellProperties_Alignment_VerticalAlignment,
+    CellProperties_Color,
+    CellProperties_LineStyle
+} from "../generated/stock_simulator"
 import { DataType } from "csstype"
 // import { CellProperties } from './path/to/your/proto/definition';
 
@@ -42,8 +47,39 @@ const ListReportCell = ({ properties }: ListReportCellProps) => {
     };
     
     const toColor = (color: CellProperties_Color | undefined) => `rgb(${color?.red ?? 0}, ${color?.green ?? 0}, ${color?.blue ?? 0})`
+    
+    const toHAlign = (hAlign?: CellProperties_Alignment_HorizontalAlignment) => {
+        switch (hAlign) {
+            case CellProperties_Alignment_HorizontalAlignment.LEFT:
+                return 'left'
+            case CellProperties_Alignment_HorizontalAlignment.CENTER:
+                return 'center'
+            case CellProperties_Alignment_HorizontalAlignment.RIGHT:
+                return 'right'
+            default:
+                return 'right'
+        }
+    }
+    
+    const toVAlign = (vAlign?: CellProperties_Alignment_VerticalAlignment) => {
+        switch (vAlign) {
+            case CellProperties_Alignment_VerticalAlignment.TOP:
+                return 'start'
+            case CellProperties_Alignment_VerticalAlignment.MIDDLE:
+                return 'center'
+            case CellProperties_Alignment_VerticalAlignment.BOTTOM:
+                return 'end'
+            default:
+                return 'end'
+        }
+    }
 
     const style: React.CSSProperties = {
+        display: "flex",
+        textAlign: toHAlign(properties.alignment?.horizontal),
+        justifyContent: toHAlign(properties.alignment?.horizontal),
+        alignItems: toVAlign(properties.alignment?.vertical),
+    
         backgroundColor: toColor(backgroundColor),
         fontFamily: font,
         fontSize: `${fontSize ?? 10}px`,

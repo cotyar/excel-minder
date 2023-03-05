@@ -25,7 +25,7 @@ export default (props: ReportsProps) => {
       }
     }
     
-    setInterval(f, 1000)
+    // setInterval(f, 10000)
     
     // const f = async () => {
     //   const channel = createChannel('/');
@@ -41,8 +41,8 @@ export default (props: ReportsProps) => {
     //   setState({reports: response.reports ?? [], loading: false})
     // }
 
-    // f().catch(console.error)
-  }, [ state.reports ])
+    f().catch(console.error)
+  }, [ ])
   
   return (    
     <div>
