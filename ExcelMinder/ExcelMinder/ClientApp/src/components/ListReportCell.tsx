@@ -20,6 +20,7 @@ const ListReportCell = ({ properties }: ListReportCellProps) => {
     // }
     
     const getBorderStyle = (lineStyle?: CellProperties_LineStyle) : DataType.LineStyle => {
+        console.log("lineStyle: ", lineStyle)
         switch (lineStyle) {
             case CellProperties_LineStyle.SOLID:
                 return 'solid'
@@ -52,7 +53,10 @@ const ListReportCell = ({ properties }: ListReportCellProps) => {
         color: `rgb(${textColor?.red ?? 0}, ${textColor?.green ?? 0}, ${textColor?.blue ?? 0})`,
         width: `${columnWeight * 6}px`,
         height: `${rowHeight * 2}px`,
-        
+
+        borderStyle: `${getBorderStyle(border?.all?.lineStyle)}`,
+        borderWidth: `${border?.all?.thickness}px`,
+        borderColor: toColor(border?.all?.color),        
         borderTopStyle: `${getBorderStyle(border?.top?.lineStyle)}`,
         borderTopWidth: `${border?.top?.thickness}px`,
         borderTopColor: toColor(border?.top?.color),
@@ -71,7 +75,7 @@ const ListReportCell = ({ properties }: ListReportCellProps) => {
         // borderRight: `${border.right.thickness}px ${getBorderStyle(border.right.lineStyle)} ${border.right.color}`,
     };
 
-    console.log("ListReportCell: ", properties)
+    // console.log("ListReportCell: ", properties)
     return (
       <>
           {/*<h1>AAA</h1>*/}

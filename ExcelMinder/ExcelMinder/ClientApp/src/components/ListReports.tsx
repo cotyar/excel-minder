@@ -42,7 +42,6 @@ const ListReports = ({ reports }: ListReportsProps) => {
           <div
             key={report.reportId}
             onClick={() => {
-              console.log("report: ", report)
               setSelectedReport(report)
             }}
             // action

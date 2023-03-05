@@ -4,6 +4,7 @@ using ExcelDna.Integration;
 using ExcelMinder.Shared;
 using Microsoft.Office.Interop.Excel;
 using static ExcelMinder.Shared.CellProperties.Types;
+using static ExcelMinder.Shared.CellProperties.Types.Alignment.Types;
 using static ExcelMinder.Shared.CellProperties.Types.Border.Types;
 using Range = Microsoft.Office.Interop.Excel.Range;
 
@@ -27,6 +28,31 @@ internal static class ExcelHelpers
             (int) XlLineStyle.xlLineStyleNone => LineStyle.None,
             (int) XlLineStyle.xlSlantDashDot => LineStyle.SlantDashDotted,
             _ => LineStyle.None
+        };
+        
+        HorizontalAlignment ToHorizontalAlignment(object alignment) => alignment switch
+        {
+            DBNull => HorizontalAlignment.Left,
+            (int) XlHAlign.xlHAlignCenter => HorizontalAlignment.Center,
+            (int) XlHAlign.xlHAlignCenterAcrossSelection => HorizontalAlignment.Center,
+            (int) XlHAlign.xlHAlignDistributed => HorizontalAlignment.Center,
+            (int) XlHAlign.xlHAlignFill => HorizontalAlignment.Center,
+            (int) XlHAlign.xlHAlignGeneral => HorizontalAlignment.Left,
+            (int) XlHAlign.xlHAlignJustify => HorizontalAlignment.Justify,
+            (int) XlHAlign.xlHAlignLeft => HorizontalAlignment.Left,
+            (int) XlHAlign.xlHAlignRight => HorizontalAlignment.Right,
+            _ => HorizontalAlignment.Left
+        };
+        
+        VerticalAlignment ToVerticalAlignment(object alignment) => alignment switch
+        {
+            DBNull => VerticalAlignment.Top,
+            (int) XlVAlign.xlVAlignBottom => VerticalAlignment.Bottom,
+            (int) XlVAlign.xlVAlignCenter => VerticalAlignment.Middle,
+            (int) XlVAlign.xlVAlignDistributed => VerticalAlignment.Middle,
+            (int) XlVAlign.xlVAlignJustify => VerticalAlignment.Middle,
+            (int) XlVAlign.xlVAlignTop => VerticalAlignment.Top,
+            _ => VerticalAlignment.Top
         };
 
         double ToThickness(object width, object style) => (width, ToLineStyle(style)) switch
@@ -66,14 +92,15 @@ internal static class ExcelHelpers
                 var currentCell = range.Cells[i, j];
 
                 var borders = currentCell.Borders;
-                var borderTop = borders[XlBordersIndex.xlEdgeTop];
-                var borderBottom = borders[XlBordersIndex.xlEdgeBottom];
-                var borderLeft = borders[XlBordersIndex.xlEdgeLeft];
-                var borderRight = borders[XlBordersIndex.xlEdgeRight];
+                // NOTE: The flip of the borders is NOT an error! (weird, I know ...)
+                var borderTop = borders[XlBordersIndex.xlEdgeBottom];
+                var borderBottom = borders[XlBordersIndex.xlEdgeTop]; 
+                var borderLeft = borders[XlBordersIndex.xlEdgeRight];
+                var borderRight = borders[XlBordersIndex.xlEdgeLeft]; 
                 var cellProperties = new CellProperties
                 {
-                    Row = i,
-                    Column = j,
+                    Row = i - 1,
+                    Column = j - 1,
                     BackgroundColor = ToColor(currentCell.Interior.Color),
                     TextColor = ToColor(currentCell.Font.Color),
                     ColumnWeight = currentCell.ColumnWidth ?? 0,
@@ -110,6 +137,11 @@ internal static class ExcelHelpers
                             Thickness = ToThickness(borderRight.Weight, borderRight.LineStyle),
                             LineStyle = ToLineStyle(borderRight.LineStyle)
                         }
+                    },
+                    Alignment = new Alignment
+                    {
+                        Horizontal = ToHorizontalAlignment(currentCell.HorizontalAlignment), 
+                        Vertical = ToVerticalAlignment(currentCell.VerticalAlignment)
                     }
                 };
                 

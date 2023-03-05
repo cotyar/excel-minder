@@ -14,6 +14,33 @@ export enum TradeType {
   UNRECOGNIZED = -1,
 }
 
+export function tradeTypeFromJSON(object: any): TradeType {
+  switch (object) {
+    case 0:
+    case "BUY":
+      return TradeType.BUY;
+    case 1:
+    case "SELL":
+      return TradeType.SELL;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return TradeType.UNRECOGNIZED;
+  }
+}
+
+export function tradeTypeToJSON(object: TradeType): string {
+  switch (object) {
+    case TradeType.BUY:
+      return "BUY";
+    case TradeType.SELL:
+      return "SELL";
+    case TradeType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export interface StockList {
   stocks: Stock[];
 }
@@ -102,6 +129,7 @@ export interface CellProperties {
   columnWeight: number;
   rowHeight: number;
   border: CellProperties_Border | undefined;
+  alignment: CellProperties_Alignment | undefined;
 }
 
 export enum CellProperties_LineStyle {
@@ -116,6 +144,63 @@ export enum CellProperties_LineStyle {
   UNRECOGNIZED = -1,
 }
 
+export function cellProperties_LineStyleFromJSON(object: any): CellProperties_LineStyle {
+  switch (object) {
+    case 0:
+    case "NONE":
+      return CellProperties_LineStyle.NONE;
+    case 1:
+    case "SOLID":
+      return CellProperties_LineStyle.SOLID;
+    case 2:
+    case "DASHED":
+      return CellProperties_LineStyle.DASHED;
+    case 3:
+    case "DOTTED":
+      return CellProperties_LineStyle.DOTTED;
+    case 4:
+    case "DOUBLE":
+      return CellProperties_LineStyle.DOUBLE;
+    case 5:
+    case "DASH_DOTTED":
+      return CellProperties_LineStyle.DASH_DOTTED;
+    case 6:
+    case "DASH_DOT_DOTTED":
+      return CellProperties_LineStyle.DASH_DOT_DOTTED;
+    case 7:
+    case "SLANT_DASH_DOTTED":
+      return CellProperties_LineStyle.SLANT_DASH_DOTTED;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return CellProperties_LineStyle.UNRECOGNIZED;
+  }
+}
+
+export function cellProperties_LineStyleToJSON(object: CellProperties_LineStyle): string {
+  switch (object) {
+    case CellProperties_LineStyle.NONE:
+      return "NONE";
+    case CellProperties_LineStyle.SOLID:
+      return "SOLID";
+    case CellProperties_LineStyle.DASHED:
+      return "DASHED";
+    case CellProperties_LineStyle.DOTTED:
+      return "DOTTED";
+    case CellProperties_LineStyle.DOUBLE:
+      return "DOUBLE";
+    case CellProperties_LineStyle.DASH_DOTTED:
+      return "DASH_DOTTED";
+    case CellProperties_LineStyle.DASH_DOT_DOTTED:
+      return "DASH_DOT_DOTTED";
+    case CellProperties_LineStyle.SLANT_DASH_DOTTED:
+      return "SLANT_DASH_DOTTED";
+    case CellProperties_LineStyle.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export interface CellProperties_FontStyle {
   bold: boolean;
   italic: boolean;
@@ -127,6 +212,103 @@ export interface CellProperties_Color {
   green: number;
   blue: number;
   alpha: number;
+}
+
+export interface CellProperties_Alignment {
+  horizontal: CellProperties_Alignment_HorizontalAlignment;
+  vertical: CellProperties_Alignment_VerticalAlignment;
+}
+
+export enum CellProperties_Alignment_HorizontalAlignment {
+  LEFT = 0,
+  CENTER = 1,
+  RIGHT = 2,
+  JUSTIFY = 3,
+  UNRECOGNIZED = -1,
+}
+
+export function cellProperties_Alignment_HorizontalAlignmentFromJSON(
+  object: any,
+): CellProperties_Alignment_HorizontalAlignment {
+  switch (object) {
+    case 0:
+    case "LEFT":
+      return CellProperties_Alignment_HorizontalAlignment.LEFT;
+    case 1:
+    case "CENTER":
+      return CellProperties_Alignment_HorizontalAlignment.CENTER;
+    case 2:
+    case "RIGHT":
+      return CellProperties_Alignment_HorizontalAlignment.RIGHT;
+    case 3:
+    case "JUSTIFY":
+      return CellProperties_Alignment_HorizontalAlignment.JUSTIFY;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return CellProperties_Alignment_HorizontalAlignment.UNRECOGNIZED;
+  }
+}
+
+export function cellProperties_Alignment_HorizontalAlignmentToJSON(
+  object: CellProperties_Alignment_HorizontalAlignment,
+): string {
+  switch (object) {
+    case CellProperties_Alignment_HorizontalAlignment.LEFT:
+      return "LEFT";
+    case CellProperties_Alignment_HorizontalAlignment.CENTER:
+      return "CENTER";
+    case CellProperties_Alignment_HorizontalAlignment.RIGHT:
+      return "RIGHT";
+    case CellProperties_Alignment_HorizontalAlignment.JUSTIFY:
+      return "JUSTIFY";
+    case CellProperties_Alignment_HorizontalAlignment.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export enum CellProperties_Alignment_VerticalAlignment {
+  TOP = 0,
+  MIDDLE = 1,
+  BOTTOM = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function cellProperties_Alignment_VerticalAlignmentFromJSON(
+  object: any,
+): CellProperties_Alignment_VerticalAlignment {
+  switch (object) {
+    case 0:
+    case "TOP":
+      return CellProperties_Alignment_VerticalAlignment.TOP;
+    case 1:
+    case "MIDDLE":
+      return CellProperties_Alignment_VerticalAlignment.MIDDLE;
+    case 2:
+    case "BOTTOM":
+      return CellProperties_Alignment_VerticalAlignment.BOTTOM;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return CellProperties_Alignment_VerticalAlignment.UNRECOGNIZED;
+  }
+}
+
+export function cellProperties_Alignment_VerticalAlignmentToJSON(
+  object: CellProperties_Alignment_VerticalAlignment,
+): string {
+  switch (object) {
+    case CellProperties_Alignment_VerticalAlignment.TOP:
+      return "TOP";
+    case CellProperties_Alignment_VerticalAlignment.MIDDLE:
+      return "MIDDLE";
+    case CellProperties_Alignment_VerticalAlignment.BOTTOM:
+      return "BOTTOM";
+    case CellProperties_Alignment_VerticalAlignment.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
 }
 
 export interface CellProperties_Border {
@@ -192,11 +374,25 @@ export const StockList = {
     return message;
   },
 
-  create(base?: DeepPartial<StockList>): StockList {
+  fromJSON(object: any): StockList {
+    return { stocks: Array.isArray(object?.stocks) ? object.stocks.map((e: any) => Stock.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: StockList): unknown {
+    const obj: any = {};
+    if (message.stocks) {
+      obj.stocks = message.stocks.map((e) => e ? Stock.toJSON(e) : undefined);
+    } else {
+      obj.stocks = [];
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<StockList>, I>>(base?: I): StockList {
     return StockList.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<StockList>): StockList {
+  fromPartial<I extends Exact<DeepPartial<StockList>, I>>(object: I): StockList {
     const message = createBaseStockList();
     message.stocks = object.stocks?.map((e) => Stock.fromPartial(e)) || [];
     return message;
@@ -239,11 +435,25 @@ export const Stock = {
     return message;
   },
 
-  create(base?: DeepPartial<Stock>): Stock {
+  fromJSON(object: any): Stock {
+    return {
+      symbol: isSet(object.symbol) ? String(object.symbol) : "",
+      name: isSet(object.name) ? String(object.name) : "",
+    };
+  },
+
+  toJSON(message: Stock): unknown {
+    const obj: any = {};
+    message.symbol !== undefined && (obj.symbol = message.symbol);
+    message.name !== undefined && (obj.name = message.name);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Stock>, I>>(base?: I): Stock {
     return Stock.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<Stock>): Stock {
+  fromPartial<I extends Exact<DeepPartial<Stock>, I>>(object: I): Stock {
     const message = createBaseStock();
     message.symbol = object.symbol ?? "";
     message.name = object.name ?? "";
@@ -281,11 +491,21 @@ export const StockRequest = {
     return message;
   },
 
-  create(base?: DeepPartial<StockRequest>): StockRequest {
+  fromJSON(object: any): StockRequest {
+    return { symbol: isSet(object.symbol) ? String(object.symbol) : "" };
+  },
+
+  toJSON(message: StockRequest): unknown {
+    const obj: any = {};
+    message.symbol !== undefined && (obj.symbol = message.symbol);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<StockRequest>, I>>(base?: I): StockRequest {
     return StockRequest.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<StockRequest>): StockRequest {
+  fromPartial<I extends Exact<DeepPartial<StockRequest>, I>>(object: I): StockRequest {
     const message = createBaseStockRequest();
     message.symbol = object.symbol ?? "";
     return message;
@@ -322,11 +542,25 @@ export const StocksRequest = {
     return message;
   },
 
-  create(base?: DeepPartial<StocksRequest>): StocksRequest {
+  fromJSON(object: any): StocksRequest {
+    return { symbols: Array.isArray(object?.symbols) ? object.symbols.map((e: any) => String(e)) : [] };
+  },
+
+  toJSON(message: StocksRequest): unknown {
+    const obj: any = {};
+    if (message.symbols) {
+      obj.symbols = message.symbols.map((e) => e);
+    } else {
+      obj.symbols = [];
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<StocksRequest>, I>>(base?: I): StocksRequest {
     return StocksRequest.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<StocksRequest>): StocksRequest {
+  fromPartial<I extends Exact<DeepPartial<StocksRequest>, I>>(object: I): StocksRequest {
     const message = createBaseStocksRequest();
     message.symbols = object.symbols?.map((e) => e) || [];
     return message;
@@ -369,11 +603,25 @@ export const SymbolListRequest = {
     return message;
   },
 
-  create(base?: DeepPartial<SymbolListRequest>): SymbolListRequest {
+  fromJSON(object: any): SymbolListRequest {
+    return {
+      prefix: isSet(object.prefix) ? String(object.prefix) : "",
+      pageSize: isSet(object.pageSize) ? Number(object.pageSize) : 0,
+    };
+  },
+
+  toJSON(message: SymbolListRequest): unknown {
+    const obj: any = {};
+    message.prefix !== undefined && (obj.prefix = message.prefix);
+    message.pageSize !== undefined && (obj.pageSize = Math.round(message.pageSize));
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SymbolListRequest>, I>>(base?: I): SymbolListRequest {
     return SymbolListRequest.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<SymbolListRequest>): SymbolListRequest {
+  fromPartial<I extends Exact<DeepPartial<SymbolListRequest>, I>>(object: I): SymbolListRequest {
     const message = createBaseSymbolListRequest();
     message.prefix = object.prefix ?? "";
     message.pageSize = object.pageSize ?? 0;
@@ -423,11 +671,27 @@ export const StockPrice = {
     return message;
   },
 
-  create(base?: DeepPartial<StockPrice>): StockPrice {
+  fromJSON(object: any): StockPrice {
+    return {
+      symbol: isSet(object.symbol) ? String(object.symbol) : "",
+      price: isSet(object.price) ? Number(object.price) : 0,
+      timestamp: isSet(object.timestamp) ? fromJsonTimestamp(object.timestamp) : undefined,
+    };
+  },
+
+  toJSON(message: StockPrice): unknown {
+    const obj: any = {};
+    message.symbol !== undefined && (obj.symbol = message.symbol);
+    message.price !== undefined && (obj.price = message.price);
+    message.timestamp !== undefined && (obj.timestamp = message.timestamp.toISOString());
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<StockPrice>, I>>(base?: I): StockPrice {
     return StockPrice.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<StockPrice>): StockPrice {
+  fromPartial<I extends Exact<DeepPartial<StockPrice>, I>>(object: I): StockPrice {
     const message = createBaseStockPrice();
     message.symbol = object.symbol ?? "";
     message.price = object.price ?? 0;
@@ -478,11 +742,35 @@ export const StockPriceSnapshot = {
     return message;
   },
 
-  create(base?: DeepPartial<StockPriceSnapshot>): StockPriceSnapshot {
+  fromJSON(object: any): StockPriceSnapshot {
+    return {
+      timestamp: isSet(object.timestamp) ? fromJsonTimestamp(object.timestamp) : undefined,
+      symbols: Array.isArray(object?.symbols) ? object.symbols.map((e: any) => String(e)) : [],
+      prices: Array.isArray(object?.prices) ? object.prices.map((e: any) => StockPrice.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: StockPriceSnapshot): unknown {
+    const obj: any = {};
+    message.timestamp !== undefined && (obj.timestamp = message.timestamp.toISOString());
+    if (message.symbols) {
+      obj.symbols = message.symbols.map((e) => e);
+    } else {
+      obj.symbols = [];
+    }
+    if (message.prices) {
+      obj.prices = message.prices.map((e) => e ? StockPrice.toJSON(e) : undefined);
+    } else {
+      obj.prices = [];
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<StockPriceSnapshot>, I>>(base?: I): StockPriceSnapshot {
     return StockPriceSnapshot.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<StockPriceSnapshot>): StockPriceSnapshot {
+  fromPartial<I extends Exact<DeepPartial<StockPriceSnapshot>, I>>(object: I): StockPriceSnapshot {
     const message = createBaseStockPriceSnapshot();
     message.timestamp = object.timestamp ?? undefined;
     message.symbols = object.symbols?.map((e) => e) || [];
@@ -539,11 +827,29 @@ export const TradeRequest = {
     return message;
   },
 
-  create(base?: DeepPartial<TradeRequest>): TradeRequest {
+  fromJSON(object: any): TradeRequest {
+    return {
+      symbol: isSet(object.symbol) ? String(object.symbol) : "",
+      quantity: isSet(object.quantity) ? Number(object.quantity) : 0,
+      type: isSet(object.type) ? tradeTypeFromJSON(object.type) : 0,
+      price: isSet(object.price) ? Number(object.price) : 0,
+    };
+  },
+
+  toJSON(message: TradeRequest): unknown {
+    const obj: any = {};
+    message.symbol !== undefined && (obj.symbol = message.symbol);
+    message.quantity !== undefined && (obj.quantity = Math.round(message.quantity));
+    message.type !== undefined && (obj.type = tradeTypeToJSON(message.type));
+    message.price !== undefined && (obj.price = message.price);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<TradeRequest>, I>>(base?: I): TradeRequest {
     return TradeRequest.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<TradeRequest>): TradeRequest {
+  fromPartial<I extends Exact<DeepPartial<TradeRequest>, I>>(object: I): TradeRequest {
     const message = createBaseTradeRequest();
     message.symbol = object.symbol ?? "";
     message.quantity = object.quantity ?? 0;
@@ -613,11 +919,33 @@ export const TradeResponse = {
     return message;
   },
 
-  create(base?: DeepPartial<TradeResponse>): TradeResponse {
+  fromJSON(object: any): TradeResponse {
+    return {
+      symbol: isSet(object.symbol) ? String(object.symbol) : "",
+      quantity: isSet(object.quantity) ? Number(object.quantity) : 0,
+      type: isSet(object.type) ? tradeTypeFromJSON(object.type) : 0,
+      price: isSet(object.price) ? Number(object.price) : 0,
+      totalCost: isSet(object.totalCost) ? Number(object.totalCost) : 0,
+      timestamp: isSet(object.timestamp) ? fromJsonTimestamp(object.timestamp) : undefined,
+    };
+  },
+
+  toJSON(message: TradeResponse): unknown {
+    const obj: any = {};
+    message.symbol !== undefined && (obj.symbol = message.symbol);
+    message.quantity !== undefined && (obj.quantity = Math.round(message.quantity));
+    message.type !== undefined && (obj.type = tradeTypeToJSON(message.type));
+    message.price !== undefined && (obj.price = message.price);
+    message.totalCost !== undefined && (obj.totalCost = message.totalCost);
+    message.timestamp !== undefined && (obj.timestamp = message.timestamp.toISOString());
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<TradeResponse>, I>>(base?: I): TradeResponse {
     return TradeResponse.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<TradeResponse>): TradeResponse {
+  fromPartial<I extends Exact<DeepPartial<TradeResponse>, I>>(object: I): TradeResponse {
     const message = createBaseTradeResponse();
     message.symbol = object.symbol ?? "";
     message.quantity = object.quantity ?? 0;
@@ -665,11 +993,25 @@ export const PageRequest = {
     return message;
   },
 
-  create(base?: DeepPartial<PageRequest>): PageRequest {
+  fromJSON(object: any): PageRequest {
+    return {
+      page: isSet(object.page) ? Number(object.page) : 0,
+      pageSize: isSet(object.pageSize) ? Number(object.pageSize) : 0,
+    };
+  },
+
+  toJSON(message: PageRequest): unknown {
+    const obj: any = {};
+    message.page !== undefined && (obj.page = Math.round(message.page));
+    message.pageSize !== undefined && (obj.pageSize = Math.round(message.pageSize));
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PageRequest>, I>>(base?: I): PageRequest {
     return PageRequest.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<PageRequest>): PageRequest {
+  fromPartial<I extends Exact<DeepPartial<PageRequest>, I>>(object: I): PageRequest {
     const message = createBasePageRequest();
     message.page = object.page ?? 0;
     message.pageSize = object.pageSize ?? 0;
@@ -707,11 +1049,25 @@ export const TradeRequestList = {
     return message;
   },
 
-  create(base?: DeepPartial<TradeRequestList>): TradeRequestList {
+  fromJSON(object: any): TradeRequestList {
+    return { trades: Array.isArray(object?.trades) ? object.trades.map((e: any) => TradeRequest.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: TradeRequestList): unknown {
+    const obj: any = {};
+    if (message.trades) {
+      obj.trades = message.trades.map((e) => e ? TradeRequest.toJSON(e) : undefined);
+    } else {
+      obj.trades = [];
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<TradeRequestList>, I>>(base?: I): TradeRequestList {
     return TradeRequestList.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<TradeRequestList>): TradeRequestList {
+  fromPartial<I extends Exact<DeepPartial<TradeRequestList>, I>>(object: I): TradeRequestList {
     const message = createBaseTradeRequestList();
     message.trades = object.trades?.map((e) => TradeRequest.fromPartial(e)) || [];
     return message;
@@ -748,11 +1104,25 @@ export const TradeResponseList = {
     return message;
   },
 
-  create(base?: DeepPartial<TradeResponseList>): TradeResponseList {
+  fromJSON(object: any): TradeResponseList {
+    return { trades: Array.isArray(object?.trades) ? object.trades.map((e: any) => TradeResponse.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: TradeResponseList): unknown {
+    const obj: any = {};
+    if (message.trades) {
+      obj.trades = message.trades.map((e) => e ? TradeResponse.toJSON(e) : undefined);
+    } else {
+      obj.trades = [];
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<TradeResponseList>, I>>(base?: I): TradeResponseList {
     return TradeResponseList.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<TradeResponseList>): TradeResponseList {
+  fromPartial<I extends Exact<DeepPartial<TradeResponseList>, I>>(object: I): TradeResponseList {
     const message = createBaseTradeResponseList();
     message.trades = object.trades?.map((e) => TradeResponse.fromPartial(e)) || [];
     return message;
@@ -847,11 +1217,39 @@ export const RealtimeCurrencyExchangeRate = {
     return message;
   },
 
-  create(base?: DeepPartial<RealtimeCurrencyExchangeRate>): RealtimeCurrencyExchangeRate {
+  fromJSON(object: any): RealtimeCurrencyExchangeRate {
+    return {
+      fromCurrencyCode: isSet(object.fromCurrencyCode) ? String(object.fromCurrencyCode) : "",
+      fromCurrencyName: isSet(object.fromCurrencyName) ? String(object.fromCurrencyName) : "",
+      toCurrencyCode: isSet(object.toCurrencyCode) ? String(object.toCurrencyCode) : "",
+      toCurrencyName: isSet(object.toCurrencyName) ? String(object.toCurrencyName) : "",
+      exchangeRate: isSet(object.exchangeRate) ? Number(object.exchangeRate) : 0,
+      lastRefreshed: isSet(object.lastRefreshed) ? String(object.lastRefreshed) : "",
+      timeZone: isSet(object.timeZone) ? String(object.timeZone) : "",
+      bidPrice: isSet(object.bidPrice) ? Number(object.bidPrice) : 0,
+      askPrice: isSet(object.askPrice) ? Number(object.askPrice) : 0,
+    };
+  },
+
+  toJSON(message: RealtimeCurrencyExchangeRate): unknown {
+    const obj: any = {};
+    message.fromCurrencyCode !== undefined && (obj.fromCurrencyCode = message.fromCurrencyCode);
+    message.fromCurrencyName !== undefined && (obj.fromCurrencyName = message.fromCurrencyName);
+    message.toCurrencyCode !== undefined && (obj.toCurrencyCode = message.toCurrencyCode);
+    message.toCurrencyName !== undefined && (obj.toCurrencyName = message.toCurrencyName);
+    message.exchangeRate !== undefined && (obj.exchangeRate = message.exchangeRate);
+    message.lastRefreshed !== undefined && (obj.lastRefreshed = message.lastRefreshed);
+    message.timeZone !== undefined && (obj.timeZone = message.timeZone);
+    message.bidPrice !== undefined && (obj.bidPrice = message.bidPrice);
+    message.askPrice !== undefined && (obj.askPrice = message.askPrice);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RealtimeCurrencyExchangeRate>, I>>(base?: I): RealtimeCurrencyExchangeRate {
     return RealtimeCurrencyExchangeRate.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<RealtimeCurrencyExchangeRate>): RealtimeCurrencyExchangeRate {
+  fromPartial<I extends Exact<DeepPartial<RealtimeCurrencyExchangeRate>, I>>(object: I): RealtimeCurrencyExchangeRate {
     const message = createBaseRealtimeCurrencyExchangeRate();
     message.fromCurrencyCode = object.fromCurrencyCode ?? "";
     message.fromCurrencyName = object.fromCurrencyName ?? "";
@@ -879,6 +1277,7 @@ function createBaseCellProperties(): CellProperties {
     columnWeight: 0,
     rowHeight: 0,
     border: undefined,
+    alignment: undefined,
   };
 }
 
@@ -916,6 +1315,9 @@ export const CellProperties = {
     }
     if (message.border !== undefined) {
       CellProperties_Border.encode(message.border, writer.uint32(90).fork()).ldelim();
+    }
+    if (message.alignment !== undefined) {
+      CellProperties_Alignment.encode(message.alignment, writer.uint32(98).fork()).ldelim();
     }
     return writer;
   },
@@ -960,6 +1362,9 @@ export const CellProperties = {
         case 11:
           message.border = CellProperties_Border.decode(reader, reader.uint32());
           break;
+        case 12:
+          message.alignment = CellProperties_Alignment.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -968,11 +1373,54 @@ export const CellProperties = {
     return message;
   },
 
-  create(base?: DeepPartial<CellProperties>): CellProperties {
+  fromJSON(object: any): CellProperties {
+    return {
+      row: isSet(object.row) ? Number(object.row) : 0,
+      column: isSet(object.column) ? Number(object.column) : 0,
+      textColor: isSet(object.textColor) ? CellProperties_Color.fromJSON(object.textColor) : undefined,
+      backgroundColor: isSet(object.backgroundColor)
+        ? CellProperties_Color.fromJSON(object.backgroundColor)
+        : undefined,
+      font: isSet(object.font) ? String(object.font) : "",
+      fontSize: isSet(object.fontSize) ? Number(object.fontSize) : 0,
+      fontStyle: isSet(object.fontStyle) ? CellProperties_FontStyle.fromJSON(object.fontStyle) : undefined,
+      cellValue: isSet(object.cellValue) ? String(object.cellValue) : "",
+      columnWeight: isSet(object.columnWeight) ? Number(object.columnWeight) : 0,
+      rowHeight: isSet(object.rowHeight) ? Number(object.rowHeight) : 0,
+      border: isSet(object.border) ? CellProperties_Border.fromJSON(object.border) : undefined,
+      alignment: isSet(object.alignment) ? CellProperties_Alignment.fromJSON(object.alignment) : undefined,
+    };
+  },
+
+  toJSON(message: CellProperties): unknown {
+    const obj: any = {};
+    message.row !== undefined && (obj.row = Math.round(message.row));
+    message.column !== undefined && (obj.column = Math.round(message.column));
+    message.textColor !== undefined &&
+      (obj.textColor = message.textColor ? CellProperties_Color.toJSON(message.textColor) : undefined);
+    message.backgroundColor !== undefined &&
+      (obj.backgroundColor = message.backgroundColor
+        ? CellProperties_Color.toJSON(message.backgroundColor)
+        : undefined);
+    message.font !== undefined && (obj.font = message.font);
+    message.fontSize !== undefined && (obj.fontSize = message.fontSize);
+    message.fontStyle !== undefined &&
+      (obj.fontStyle = message.fontStyle ? CellProperties_FontStyle.toJSON(message.fontStyle) : undefined);
+    message.cellValue !== undefined && (obj.cellValue = message.cellValue);
+    message.columnWeight !== undefined && (obj.columnWeight = message.columnWeight);
+    message.rowHeight !== undefined && (obj.rowHeight = message.rowHeight);
+    message.border !== undefined &&
+      (obj.border = message.border ? CellProperties_Border.toJSON(message.border) : undefined);
+    message.alignment !== undefined &&
+      (obj.alignment = message.alignment ? CellProperties_Alignment.toJSON(message.alignment) : undefined);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CellProperties>, I>>(base?: I): CellProperties {
     return CellProperties.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<CellProperties>): CellProperties {
+  fromPartial<I extends Exact<DeepPartial<CellProperties>, I>>(object: I): CellProperties {
     const message = createBaseCellProperties();
     message.row = object.row ?? 0;
     message.column = object.column ?? 0;
@@ -992,6 +1440,9 @@ export const CellProperties = {
     message.rowHeight = object.rowHeight ?? 0;
     message.border = (object.border !== undefined && object.border !== null)
       ? CellProperties_Border.fromPartial(object.border)
+      : undefined;
+    message.alignment = (object.alignment !== undefined && object.alignment !== null)
+      ? CellProperties_Alignment.fromPartial(object.alignment)
       : undefined;
     return message;
   },
@@ -1039,11 +1490,27 @@ export const CellProperties_FontStyle = {
     return message;
   },
 
-  create(base?: DeepPartial<CellProperties_FontStyle>): CellProperties_FontStyle {
+  fromJSON(object: any): CellProperties_FontStyle {
+    return {
+      bold: isSet(object.bold) ? Boolean(object.bold) : false,
+      italic: isSet(object.italic) ? Boolean(object.italic) : false,
+      underline: isSet(object.underline) ? Number(object.underline) : 0,
+    };
+  },
+
+  toJSON(message: CellProperties_FontStyle): unknown {
+    const obj: any = {};
+    message.bold !== undefined && (obj.bold = message.bold);
+    message.italic !== undefined && (obj.italic = message.italic);
+    message.underline !== undefined && (obj.underline = Math.round(message.underline));
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CellProperties_FontStyle>, I>>(base?: I): CellProperties_FontStyle {
     return CellProperties_FontStyle.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<CellProperties_FontStyle>): CellProperties_FontStyle {
+  fromPartial<I extends Exact<DeepPartial<CellProperties_FontStyle>, I>>(object: I): CellProperties_FontStyle {
     const message = createBaseCellProperties_FontStyle();
     message.bold = object.bold ?? false;
     message.italic = object.italic ?? false;
@@ -1100,16 +1567,100 @@ export const CellProperties_Color = {
     return message;
   },
 
-  create(base?: DeepPartial<CellProperties_Color>): CellProperties_Color {
+  fromJSON(object: any): CellProperties_Color {
+    return {
+      red: isSet(object.red) ? Number(object.red) : 0,
+      green: isSet(object.green) ? Number(object.green) : 0,
+      blue: isSet(object.blue) ? Number(object.blue) : 0,
+      alpha: isSet(object.alpha) ? Number(object.alpha) : 0,
+    };
+  },
+
+  toJSON(message: CellProperties_Color): unknown {
+    const obj: any = {};
+    message.red !== undefined && (obj.red = message.red);
+    message.green !== undefined && (obj.green = message.green);
+    message.blue !== undefined && (obj.blue = message.blue);
+    message.alpha !== undefined && (obj.alpha = message.alpha);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CellProperties_Color>, I>>(base?: I): CellProperties_Color {
     return CellProperties_Color.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<CellProperties_Color>): CellProperties_Color {
+  fromPartial<I extends Exact<DeepPartial<CellProperties_Color>, I>>(object: I): CellProperties_Color {
     const message = createBaseCellProperties_Color();
     message.red = object.red ?? 0;
     message.green = object.green ?? 0;
     message.blue = object.blue ?? 0;
     message.alpha = object.alpha ?? 0;
+    return message;
+  },
+};
+
+function createBaseCellProperties_Alignment(): CellProperties_Alignment {
+  return { horizontal: 0, vertical: 0 };
+}
+
+export const CellProperties_Alignment = {
+  encode(message: CellProperties_Alignment, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.horizontal !== 0) {
+      writer.uint32(8).int32(message.horizontal);
+    }
+    if (message.vertical !== 0) {
+      writer.uint32(16).int32(message.vertical);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CellProperties_Alignment {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCellProperties_Alignment();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.horizontal = reader.int32() as any;
+          break;
+        case 2:
+          message.vertical = reader.int32() as any;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CellProperties_Alignment {
+    return {
+      horizontal: isSet(object.horizontal)
+        ? cellProperties_Alignment_HorizontalAlignmentFromJSON(object.horizontal)
+        : 0,
+      vertical: isSet(object.vertical) ? cellProperties_Alignment_VerticalAlignmentFromJSON(object.vertical) : 0,
+    };
+  },
+
+  toJSON(message: CellProperties_Alignment): unknown {
+    const obj: any = {};
+    message.horizontal !== undefined &&
+      (obj.horizontal = cellProperties_Alignment_HorizontalAlignmentToJSON(message.horizontal));
+    message.vertical !== undefined &&
+      (obj.vertical = cellProperties_Alignment_VerticalAlignmentToJSON(message.vertical));
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CellProperties_Alignment>, I>>(base?: I): CellProperties_Alignment {
+    return CellProperties_Alignment.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<CellProperties_Alignment>, I>>(object: I): CellProperties_Alignment {
+    const message = createBaseCellProperties_Alignment();
+    message.horizontal = object.horizontal ?? 0;
+    message.vertical = object.vertical ?? 0;
     return message;
   },
 };
@@ -1168,11 +1719,36 @@ export const CellProperties_Border = {
     return message;
   },
 
-  create(base?: DeepPartial<CellProperties_Border>): CellProperties_Border {
+  fromJSON(object: any): CellProperties_Border {
+    return {
+      all: isSet(object.all) ? CellProperties_Border_BorderProperties.fromJSON(object.all) : undefined,
+      top: isSet(object.top) ? CellProperties_Border_BorderProperties.fromJSON(object.top) : undefined,
+      bottom: isSet(object.bottom) ? CellProperties_Border_BorderProperties.fromJSON(object.bottom) : undefined,
+      left: isSet(object.left) ? CellProperties_Border_BorderProperties.fromJSON(object.left) : undefined,
+      right: isSet(object.right) ? CellProperties_Border_BorderProperties.fromJSON(object.right) : undefined,
+    };
+  },
+
+  toJSON(message: CellProperties_Border): unknown {
+    const obj: any = {};
+    message.all !== undefined &&
+      (obj.all = message.all ? CellProperties_Border_BorderProperties.toJSON(message.all) : undefined);
+    message.top !== undefined &&
+      (obj.top = message.top ? CellProperties_Border_BorderProperties.toJSON(message.top) : undefined);
+    message.bottom !== undefined &&
+      (obj.bottom = message.bottom ? CellProperties_Border_BorderProperties.toJSON(message.bottom) : undefined);
+    message.left !== undefined &&
+      (obj.left = message.left ? CellProperties_Border_BorderProperties.toJSON(message.left) : undefined);
+    message.right !== undefined &&
+      (obj.right = message.right ? CellProperties_Border_BorderProperties.toJSON(message.right) : undefined);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CellProperties_Border>, I>>(base?: I): CellProperties_Border {
     return CellProperties_Border.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<CellProperties_Border>): CellProperties_Border {
+  fromPartial<I extends Exact<DeepPartial<CellProperties_Border>, I>>(object: I): CellProperties_Border {
     const message = createBaseCellProperties_Border();
     message.all = (object.all !== undefined && object.all !== null)
       ? CellProperties_Border_BorderProperties.fromPartial(object.all)
@@ -1235,11 +1811,31 @@ export const CellProperties_Border_BorderProperties = {
     return message;
   },
 
-  create(base?: DeepPartial<CellProperties_Border_BorderProperties>): CellProperties_Border_BorderProperties {
+  fromJSON(object: any): CellProperties_Border_BorderProperties {
+    return {
+      color: isSet(object.color) ? CellProperties_Color.fromJSON(object.color) : undefined,
+      thickness: isSet(object.thickness) ? Number(object.thickness) : 0,
+      lineStyle: isSet(object.lineStyle) ? cellProperties_LineStyleFromJSON(object.lineStyle) : 0,
+    };
+  },
+
+  toJSON(message: CellProperties_Border_BorderProperties): unknown {
+    const obj: any = {};
+    message.color !== undefined && (obj.color = message.color ? CellProperties_Color.toJSON(message.color) : undefined);
+    message.thickness !== undefined && (obj.thickness = message.thickness);
+    message.lineStyle !== undefined && (obj.lineStyle = cellProperties_LineStyleToJSON(message.lineStyle));
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CellProperties_Border_BorderProperties>, I>>(
+    base?: I,
+  ): CellProperties_Border_BorderProperties {
     return CellProperties_Border_BorderProperties.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<CellProperties_Border_BorderProperties>): CellProperties_Border_BorderProperties {
+  fromPartial<I extends Exact<DeepPartial<CellProperties_Border_BorderProperties>, I>>(
+    object: I,
+  ): CellProperties_Border_BorderProperties {
     const message = createBaseCellProperties_Border_BorderProperties();
     message.color = (object.color !== undefined && object.color !== null)
       ? CellProperties_Color.fromPartial(object.color)
@@ -1298,11 +1894,35 @@ export const ExcelReport = {
     return message;
   },
 
-  create(base?: DeepPartial<ExcelReport>): ExcelReport {
+  fromJSON(object: any): ExcelReport {
+    return {
+      reportId: isSet(object.reportId) ? String(object.reportId) : "",
+      rowCount: isSet(object.rowCount) ? Number(object.rowCount) : 0,
+      columnCount: isSet(object.columnCount) ? Number(object.columnCount) : 0,
+      cellProperties: Array.isArray(object?.cellProperties)
+        ? object.cellProperties.map((e: any) => CellProperties.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: ExcelReport): unknown {
+    const obj: any = {};
+    message.reportId !== undefined && (obj.reportId = message.reportId);
+    message.rowCount !== undefined && (obj.rowCount = Math.round(message.rowCount));
+    message.columnCount !== undefined && (obj.columnCount = Math.round(message.columnCount));
+    if (message.cellProperties) {
+      obj.cellProperties = message.cellProperties.map((e) => e ? CellProperties.toJSON(e) : undefined);
+    } else {
+      obj.cellProperties = [];
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ExcelReport>, I>>(base?: I): ExcelReport {
     return ExcelReport.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<ExcelReport>): ExcelReport {
+  fromPartial<I extends Exact<DeepPartial<ExcelReport>, I>>(object: I): ExcelReport {
     const message = createBaseExcelReport();
     message.reportId = object.reportId ?? "";
     message.rowCount = object.rowCount ?? 0;
@@ -1342,11 +1962,25 @@ export const ListExcelReportResponse = {
     return message;
   },
 
-  create(base?: DeepPartial<ListExcelReportResponse>): ListExcelReportResponse {
+  fromJSON(object: any): ListExcelReportResponse {
+    return { reports: Array.isArray(object?.reports) ? object.reports.map((e: any) => ExcelReport.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: ListExcelReportResponse): unknown {
+    const obj: any = {};
+    if (message.reports) {
+      obj.reports = message.reports.map((e) => e ? ExcelReport.toJSON(e) : undefined);
+    } else {
+      obj.reports = [];
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ListExcelReportResponse>, I>>(base?: I): ListExcelReportResponse {
     return ListExcelReportResponse.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<ListExcelReportResponse>): ListExcelReportResponse {
+  fromPartial<I extends Exact<DeepPartial<ListExcelReportResponse>, I>>(object: I): ListExcelReportResponse {
     const message = createBaseListExcelReportResponse();
     message.reports = object.reports?.map((e) => ExcelReport.fromPartial(e)) || [];
     return message;
@@ -1383,11 +2017,21 @@ export const DeleteExcelReportRequest = {
     return message;
   },
 
-  create(base?: DeepPartial<DeleteExcelReportRequest>): DeleteExcelReportRequest {
+  fromJSON(object: any): DeleteExcelReportRequest {
+    return { reportId: isSet(object.reportId) ? String(object.reportId) : "" };
+  },
+
+  toJSON(message: DeleteExcelReportRequest): unknown {
+    const obj: any = {};
+    message.reportId !== undefined && (obj.reportId = message.reportId);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DeleteExcelReportRequest>, I>>(base?: I): DeleteExcelReportRequest {
     return DeleteExcelReportRequest.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<DeleteExcelReportRequest>): DeleteExcelReportRequest {
+  fromPartial<I extends Exact<DeepPartial<DeleteExcelReportRequest>, I>>(object: I): DeleteExcelReportRequest {
     const message = createBaseDeleteExcelReportRequest();
     message.reportId = object.reportId ?? "";
     return message;
@@ -1424,11 +2068,21 @@ export const DeleteExcelReportResponse = {
     return message;
   },
 
-  create(base?: DeepPartial<DeleteExcelReportResponse>): DeleteExcelReportResponse {
+  fromJSON(object: any): DeleteExcelReportResponse {
+    return { deleted: isSet(object.deleted) ? Boolean(object.deleted) : false };
+  },
+
+  toJSON(message: DeleteExcelReportResponse): unknown {
+    const obj: any = {};
+    message.deleted !== undefined && (obj.deleted = message.deleted);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DeleteExcelReportResponse>, I>>(base?: I): DeleteExcelReportResponse {
     return DeleteExcelReportResponse.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<DeleteExcelReportResponse>): DeleteExcelReportResponse {
+  fromPartial<I extends Exact<DeepPartial<DeleteExcelReportResponse>, I>>(object: I): DeleteExcelReportResponse {
     const message = createBaseDeleteExcelReportResponse();
     message.deleted = object.deleted ?? false;
     return message;
@@ -1525,6 +2179,14 @@ export const StockSimulatorDefinition = {
       responseStream: false,
       options: {},
     },
+    excelReportsUpdates: {
+      name: "ExcelReportsUpdates",
+      requestType: Empty,
+      requestStream: false,
+      responseType: ListExcelReportResponse,
+      responseStream: true,
+      options: {},
+    },
     addExcelReport: {
       name: "AddExcelReport",
       requestType: ExcelReport,
@@ -1578,6 +2240,10 @@ export interface StockSimulatorServiceImplementation<CallContextExt = {}> {
     request: Empty,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ListExcelReportResponse>>;
+  excelReportsUpdates(
+    request: Empty,
+    context: CallContext & CallContextExt,
+  ): ServerStreamingMethodResult<DeepPartial<ListExcelReportResponse>>;
   addExcelReport(request: ExcelReport, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   deleteExcelReport(
     request: DeleteExcelReportRequest,
@@ -1619,6 +2285,10 @@ export interface StockSimulatorClient<CallOptionsExt = {}> {
     request: DeepPartial<Empty>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ListExcelReportResponse>;
+  excelReportsUpdates(
+    request: DeepPartial<Empty>,
+    options?: CallOptions & CallOptionsExt,
+  ): AsyncIterable<ListExcelReportResponse>;
   addExcelReport(request: DeepPartial<ExcelReport>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   deleteExcelReport(
     request: DeepPartial<DeleteExcelReportRequest>,
@@ -1652,6 +2322,10 @@ export type DeepPartial<T> = T extends Builtin ? T
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 function toTimestamp(date: Date): Timestamp {
   const seconds = date.getTime() / 1_000;
   const nanos = (date.getTime() % 1_000) * 1_000_000;
@@ -1662,6 +2336,16 @@ function fromTimestamp(t: Timestamp): Date {
   let millis = t.seconds * 1_000;
   millis += t.nanos / 1_000_000;
   return new Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof Date) {
+    return o;
+  } else if (typeof o === "string") {
+    return new Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
 }
 
 function longToNumber(long: Long): number {
@@ -1676,6 +2360,10 @@ function longToNumber(long: Long): number {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }
 
 export type ServerStreamingMethodResult<Response> = { [Symbol.asyncIterator](): AsyncIterator<Response, void> };

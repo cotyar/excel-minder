@@ -405,11 +405,32 @@ export const Http = {
     return message;
   },
 
-  create(base?: DeepPartial<Http>): Http {
+  fromJSON(object: any): Http {
+    return {
+      rules: Array.isArray(object?.rules) ? object.rules.map((e: any) => HttpRule.fromJSON(e)) : [],
+      fullyDecodeReservedExpansion: isSet(object.fullyDecodeReservedExpansion)
+        ? Boolean(object.fullyDecodeReservedExpansion)
+        : false,
+    };
+  },
+
+  toJSON(message: Http): unknown {
+    const obj: any = {};
+    if (message.rules) {
+      obj.rules = message.rules.map((e) => e ? HttpRule.toJSON(e) : undefined);
+    } else {
+      obj.rules = [];
+    }
+    message.fullyDecodeReservedExpansion !== undefined &&
+      (obj.fullyDecodeReservedExpansion = message.fullyDecodeReservedExpansion);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Http>, I>>(base?: I): Http {
     return Http.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<Http>): Http {
+  fromPartial<I extends Exact<DeepPartial<Http>, I>>(object: I): Http {
     const message = createBaseHttp();
     message.rules = object.rules?.map((e) => HttpRule.fromPartial(e)) || [];
     message.fullyDecodeReservedExpansion = object.fullyDecodeReservedExpansion ?? false;
@@ -512,11 +533,48 @@ export const HttpRule = {
     return message;
   },
 
-  create(base?: DeepPartial<HttpRule>): HttpRule {
+  fromJSON(object: any): HttpRule {
+    return {
+      selector: isSet(object.selector) ? String(object.selector) : "",
+      get: isSet(object.get) ? String(object.get) : undefined,
+      put: isSet(object.put) ? String(object.put) : undefined,
+      post: isSet(object.post) ? String(object.post) : undefined,
+      delete: isSet(object.delete) ? String(object.delete) : undefined,
+      patch: isSet(object.patch) ? String(object.patch) : undefined,
+      custom: isSet(object.custom) ? CustomHttpPattern.fromJSON(object.custom) : undefined,
+      body: isSet(object.body) ? String(object.body) : "",
+      responseBody: isSet(object.responseBody) ? String(object.responseBody) : "",
+      additionalBindings: Array.isArray(object?.additionalBindings)
+        ? object.additionalBindings.map((e: any) => HttpRule.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: HttpRule): unknown {
+    const obj: any = {};
+    message.selector !== undefined && (obj.selector = message.selector);
+    message.get !== undefined && (obj.get = message.get);
+    message.put !== undefined && (obj.put = message.put);
+    message.post !== undefined && (obj.post = message.post);
+    message.delete !== undefined && (obj.delete = message.delete);
+    message.patch !== undefined && (obj.patch = message.patch);
+    message.custom !== undefined &&
+      (obj.custom = message.custom ? CustomHttpPattern.toJSON(message.custom) : undefined);
+    message.body !== undefined && (obj.body = message.body);
+    message.responseBody !== undefined && (obj.responseBody = message.responseBody);
+    if (message.additionalBindings) {
+      obj.additionalBindings = message.additionalBindings.map((e) => e ? HttpRule.toJSON(e) : undefined);
+    } else {
+      obj.additionalBindings = [];
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<HttpRule>, I>>(base?: I): HttpRule {
     return HttpRule.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<HttpRule>): HttpRule {
+  fromPartial<I extends Exact<DeepPartial<HttpRule>, I>>(object: I): HttpRule {
     const message = createBaseHttpRule();
     message.selector = object.selector ?? "";
     message.get = object.get ?? undefined;
@@ -570,11 +628,22 @@ export const CustomHttpPattern = {
     return message;
   },
 
-  create(base?: DeepPartial<CustomHttpPattern>): CustomHttpPattern {
+  fromJSON(object: any): CustomHttpPattern {
+    return { kind: isSet(object.kind) ? String(object.kind) : "", path: isSet(object.path) ? String(object.path) : "" };
+  },
+
+  toJSON(message: CustomHttpPattern): unknown {
+    const obj: any = {};
+    message.kind !== undefined && (obj.kind = message.kind);
+    message.path !== undefined && (obj.path = message.path);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CustomHttpPattern>, I>>(base?: I): CustomHttpPattern {
     return CustomHttpPattern.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<CustomHttpPattern>): CustomHttpPattern {
+  fromPartial<I extends Exact<DeepPartial<CustomHttpPattern>, I>>(object: I): CustomHttpPattern {
     const message = createBaseCustomHttpPattern();
     message.kind = object.kind ?? "";
     message.path = object.path ?? "";
@@ -588,3 +657,11 @@ export type DeepPartial<T> = T extends Builtin ? T
   : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
+}

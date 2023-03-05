@@ -44,11 +44,21 @@ export const HelloRequest = {
     return message;
   },
 
-  create(base?: DeepPartial<HelloRequest>): HelloRequest {
+  fromJSON(object: any): HelloRequest {
+    return { name: isSet(object.name) ? String(object.name) : "" };
+  },
+
+  toJSON(message: HelloRequest): unknown {
+    const obj: any = {};
+    message.name !== undefined && (obj.name = message.name);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<HelloRequest>, I>>(base?: I): HelloRequest {
     return HelloRequest.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<HelloRequest>): HelloRequest {
+  fromPartial<I extends Exact<DeepPartial<HelloRequest>, I>>(object: I): HelloRequest {
     const message = createBaseHelloRequest();
     message.name = object.name ?? "";
     return message;
@@ -85,11 +95,21 @@ export const HelloReply = {
     return message;
   },
 
-  create(base?: DeepPartial<HelloReply>): HelloReply {
+  fromJSON(object: any): HelloReply {
+    return { message: isSet(object.message) ? String(object.message) : "" };
+  },
+
+  toJSON(message: HelloReply): unknown {
+    const obj: any = {};
+    message.message !== undefined && (obj.message = message.message);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<HelloReply>, I>>(base?: I): HelloReply {
     return HelloReply.fromPartial(base ?? {});
   },
 
-  fromPartial(object: DeepPartial<HelloReply>): HelloReply {
+  fromPartial<I extends Exact<DeepPartial<HelloReply>, I>>(object: I): HelloReply {
     const message = createBaseHelloReply();
     message.message = object.message ?? "";
     return message;
@@ -130,3 +150,11 @@ export type DeepPartial<T> = T extends Builtin ? T
   : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
+}

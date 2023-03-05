@@ -187,6 +187,21 @@ message CellProperties {
     float blue = 3;
     float alpha = 4;
   }
+  message Alignment {
+    enum HorizontalAlignment {
+      LEFT = 0;
+      CENTER = 1;
+      RIGHT = 2;
+      JUSTIFY = 3;
+    }
+    enum VerticalAlignment {
+      TOP = 0;
+      MIDDLE = 1;
+      BOTTOM = 2;
+    }
+    HorizontalAlignment horizontal = 1;
+    VerticalAlignment vertical = 2;
+  }
   message Border {
     message BorderProperties {
       Color color = 1;
@@ -210,6 +225,7 @@ message CellProperties {
   double column_weight = 9;
   double row_height = 10;
   Border border = 11;
+  Alignment alignment = 12;
 }
 
 message ExcelReport {
