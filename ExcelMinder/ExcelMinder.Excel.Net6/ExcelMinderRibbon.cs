@@ -49,12 +49,11 @@ public class RibbonController : ExcelRibbon
         var endCell = selectedRange.Cells[selectedRange.Rows.Count, selectedRange.Columns.Count];
         Range range = worksheet.Range[startCell, endCell];
 
-        // var (rows, cols, rangePropertiesList) = range.GetRangePropertiesList();
         var (rows, cols, rangePropertiesList) = selectedRange.GetRangePropertiesList();
-        var csv = rangePropertiesList.ToCsv().To2DArray();
-        worksheet.Range["A1"].Value = rows;
-        worksheet.Range["B1"].Value = cols;
-        worksheet.Range["A2"].Apply(csv);
+        // var csv = rangePropertiesList.ToCsv().To2DArray();
+        // worksheet.Range["A1"].Value = rows;
+        // worksheet.Range["B1"].Value = cols;
+        // worksheet.Range["A2"].Apply(csv);
 
         var reportId = $"Report-{DateTimeOffset.Now:O}";
         Client.AddExcelReport(new ExcelReport

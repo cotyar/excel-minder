@@ -44,6 +44,7 @@ const ListReports = ({ reports }: ListReportsProps) => {
             onClick={() => {
               setSelectedReport(report)
             }}
+            className="btn btn-outline-secondary m-1"
             // action
             // active={selectedReport === report}
           >
@@ -52,12 +53,15 @@ const ListReports = ({ reports }: ListReportsProps) => {
         ))}
       </div>
       {selectedReport !== undefined && (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div
+          className="m-1"
+          style={{ display: 'flex', flexDirection: 'column' }}>
           {
             // <div>
             //   { toRow(selectedReport.cellProperties) }
             // </div>
-            toChunks(selectedReport.cellProperties, selectedReport.columnCount).map((row) => <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+            toChunks(selectedReport.cellProperties, selectedReport.columnCount).map((row) => 
+                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
               { toRow(row) }
             </div>)
           }

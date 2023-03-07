@@ -10,6 +10,7 @@ public sealed class StockGrain : Grain, IStockGrain
     // TODO: Change to decimals everywhere
     private float _price;
     private float _openPrice;
+    private float _prevClosePrice;
 
     private IDisposable? _timer;
     
@@ -20,9 +21,11 @@ public sealed class StockGrain : Grain, IStockGrain
         _viewersManager = new ObserverManager<IStockViewerGrain>( TimeSpan.FromDays(10), logger);
     }
     
-    public Task<StockPrice> Price() => Task.FromResult((Symbol, _price).ToStockPrice());
-    
-    public Task<StockPrice> OpenPrice() => Task.FromResult((Symbol, _openPrice).ToStockPrice());
+    public Task<StockPrice> Price() => Task.FromResult(GetStockPrice());
+
+    private StockPrice GetStockPrice() => (Symbol, _price, _price - 0.0005f, _price + 0.0005f, _openPrice, _prevClosePrice).ToStockPrice();
+
+    public Task<StockPrice> OpenPrice() => Task.FromResult((Symbol, _openPrice, _openPrice, _openPrice, _openPrice, _prevClosePrice).ToStockPrice());
     
     public Task SubscribePriceChanges(IStockViewerGrain viewer)
     {
@@ -41,6 +44,7 @@ public sealed class StockGrain : Grain, IStockGrain
         await base.OnActivateAsync(cancellationToken);        
         
         _price = _openPrice = (float) Math.Round(125f + new Random().NextDouble() * 100f - 50f, 4);
+        _prevClosePrice = SimulationHelper.RandomWalkSimulation(_price, 1, _openPrice, _openPrice / 50f)[0];
 
         _timer = RegisterTimer(
             UpdatePrice,
@@ -59,7 +63,7 @@ public sealed class StockGrain : Grain, IStockGrain
     private Task UpdatePrice(object state)
     {
         _price = SimulationHelper.RandomWalkSimulation(_price, 1, _openPrice, _openPrice / 50f)[0];
-        return _viewersManager.Notify(s => s.UpdatePrice(new StockPrice { Symbol = Symbol, Price = _price }));
+        return _viewersManager.Notify(s => s.UpdatePrice(GetStockPrice()));
     }
 
     private string Symbol => this.GetPrimaryKeyString();

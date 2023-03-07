@@ -28,7 +28,7 @@ static class EnumerableExtensions
         return res;
     }
 
-    public static object[,] To2DArray<T>(this IEnumerable<T> source) => source.Select(x => new object [] { x }).To2DArray();
+    public static object[,] To2DArray1<T>(this IEnumerable<T> source) => source.Select(x => new object [] { x }).To2DArray();
     
     public static Range Apply(this Range range, object[,] source)
     {

@@ -131,7 +131,7 @@ public class ExcelFunctions
     public static object[,] GetRangeProperties([ExcelArgument(Description = "The starting price of the stock.", AllowReference = true)] object range)
     {
         var (_, _, props) = ((range as ExcelReference)?.ToRange()).GetRangePropertiesList();
-        return props.To2DArray();
+        return props.To2DArray1();
     }
 
 
@@ -161,7 +161,19 @@ public class ExcelFunctions
         return ExcelAsyncUtil.Observe(functionName, paramInfo, () =>
         {
             var excelObservable = new ExcelObservable<StockPriceSnapshot>(
-                m => m.Prices.Select(p => new object[] { p.Symbol, p.Price }).ToArray().To2DArray(),
+                                m =>
+                                {
+                                    var objects = new []
+                                    {
+                                        new object[] { "Symbol", "Price", "Change", "Bid", "Offer", "Open", "Prev Close" }
+                                    }.Concat(
+                                        m.Prices.Select(p => new object[]
+                                            { p.Symbol, p.Price, (p.Price - p.Open), p.Bid, p.Ask, p.Open, p.PrevClose })
+                                    ).ToArray().To2DArray();
+                                    return objects;
+                                },
+                                // m => 
+                        // m.Prices.Select(p => new object[] { p.Symbol, p.Price, p.Price - p.Open, p.Bid, p.Ask, p.Open, p.PrevClose }).ToArray().To2DArray(),
                 Client.GetStockPriceUpdates(new StocksRequest { Symbols = { symbolStrings } }).ResponseStream);
             return excelObservable;
         });

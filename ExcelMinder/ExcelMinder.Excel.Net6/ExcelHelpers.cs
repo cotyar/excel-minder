@@ -111,6 +111,9 @@ internal static class ExcelHelpers
                 Border borderBottom = borders[XlBordersIndex.xlEdgeBottom]; 
                 Border borderLeft = borders[XlBordersIndex.xlEdgeLeft]; 
                 Border borderRight = borders[XlBordersIndex.xlEdgeRight];
+                
+                var value = currentCell.Value;
+
                 var cellProperties = new CellProperties
                 {
                     Row = i - 1,
@@ -154,7 +157,7 @@ internal static class ExcelHelpers
                     },
                     Alignment = new Alignment
                     {
-                        Horizontal = ToHorizontalAlignment(currentCell.HorizontalAlignment, currentCell.Value), 
+                        Horizontal = ToHorizontalAlignment(currentCell.HorizontalAlignment, value), 
                         Vertical = ToVerticalAlignment(currentCell.VerticalAlignment)
                     }
                 };
@@ -170,8 +173,14 @@ internal static class ExcelHelpers
                         Underline = currentCell.Font.Underline
                     };
                 }
-                
-                if (currentCell.Value != null) cellProperties.CellValue = currentCell.Value.ToString();
+
+                if (value != null)
+                    cellProperties.CellValue = value switch
+                    {
+                        string s => s,
+                        double d => Math.Round(d, 4).ToString(),
+                        _ => value.ToString()
+                    };
                 
                 result.Add(cellProperties);
             }
