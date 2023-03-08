@@ -2,7 +2,7 @@
 A scalable realtime financial data processing environment. Excel/Python/Web.
 (In a very pre-alpha state, so far spent only a couple of hours writing it, but more to come)
 
-## Click the _gif_ below:
+## Sending Excel-created real-time reports to the web server:
 ![img](Videos/Reports.gif)
 
 ## Getting real-time price updates into 4 Excels simultaneously: 
