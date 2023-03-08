@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text.Json;
 using System.Windows.Forms;
@@ -170,6 +172,24 @@ public class ExcelFunctions
                                         m.Prices.Select(p => new object[]
                                             { p.Symbol, p.Price, (p.Price - p.Open), p.Bid, p.Ask, p.Open, p.PrevClose })
                                     ).ToArray().To2DArray();
+                                    // return objects;
+
+                                    try
+                                    {
+                                        
+                                        // var retRange = callingCell.ToRange(); // Worksheet.Cell callingCell as Range;//.ToRange().Resize[objects.GetLength(0), objects.GetLength(1)];
+                                        //
+                                        // Range cell = retRange.Cells[1, 1];
+                                        // cell.Font.Color = Color.Red;
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Debug.WriteLine(e);
+                                        throw;
+                                    }
+
+                                    // return retRange;
+                                    // var range = Range; 
                                     return objects;
                                 },
                                 // m => 

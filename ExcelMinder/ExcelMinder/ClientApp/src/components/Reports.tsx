@@ -25,7 +25,7 @@ export default (props: ReportsProps) => {
       }
     }
     
-    // setInterval(f, 10000)
+    setInterval(f, 1000) // TODO: Enable grpcweb
     
     // const f = async () => {
     //   const channel = createChannel('/');

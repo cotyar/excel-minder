@@ -17,8 +17,9 @@ public class RefDataProviderGrain : Grain, IRefDataProviderGrain
     public Task<ImmutableArray<Stock>> GetKnownStocks() => Task.FromResult(_stocks.Values.OrderBy(s => s.Symbol).ToImmutableArray());
     public Task<ImmutableArray<Stock>> SearchSymbols(string prefix, int pageSize)
     {
+        var prefixLower = prefix.ToLower();
         var stocks = _stocks.Values
-            .Where(s => (s.Symbol ?? "").StartsWith(prefix) || (s.Name ?? "").StartsWith(prefix)).OrderBy(s => s.Symbol)
+            .Where(s => (s.Symbol ?? "").ToLower().StartsWith(prefixLower) || (s.Name ?? "").ToLower().Contains(prefixLower)).OrderBy(s => s.Symbol)
             .Take(pageSize)
             .ToImmutableArray();
         return Task.FromResult(stocks);
