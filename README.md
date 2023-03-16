@@ -5,6 +5,10 @@ A scalable realtime financial data processing environment. Excel/Python/Web.
 ## Sending Excel-created real-time reports to the web server:
 ![img](Videos/Reports.gif)
 
+## Sending Excel-created reports to the web server and exporting them in different as PNG/HTML/PDF:
+![img](Videos/Report_saved_in_diff_formats.gif)
+![img](Videos/Report_saved_in_diff_formats_2.gif)
+
 ## Getting real-time price updates into 4 Excels simultaneously: 
 ![img](Videos/4_Excels.gif)
 
