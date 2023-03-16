@@ -13,19 +13,8 @@ type ListReportCellProps = {
 };
 const ListReportCell = ({ properties }: ListReportCellProps) => {
     const { backgroundColor, font, fontSize, fontStyle, textColor, cellValue, columnWeight, rowHeight, border } = properties;
-
-    // const toColor = (num: number) => {
-    //     let hex = num.toString(16);
-    //     while (hex.length < 6) {
-    //         hex = `${hex}0`;
-    //     }
-    //     hex = `#${hex.toUpperCase()}`;
-    //     console.log(hex);
-    //     return hex;
-    // }
     
     const getBorderStyle = (lineStyle?: CellProperties_LineStyle) : DataType.LineStyle => {
-        console.log("lineStyle: ", lineStyle)
         switch (lineStyle) {
             case CellProperties_LineStyle.SOLID:
                 return 'solid'
@@ -82,12 +71,12 @@ const ListReportCell = ({ properties }: ListReportCellProps) => {
     
         backgroundColor: toColor(backgroundColor),
         fontFamily: font,
-        fontSize: `${fontSize ?? 10}px`,
+        fontSize: `${Math.round((fontSize ?? 10) * 1.5)}px`,
         fontWeight: fontStyle?.bold ? 'bold' : 'normal',
         fontStyle: fontStyle?.italic ? 'italic' : 'normal',
         textDecoration: (fontStyle?.underline && fontStyle.underline !== -4142) ? 'underline' : 'none',
         color: `rgb(${textColor?.red ?? 0}, ${textColor?.green ?? 0}, ${textColor?.blue ?? 0})`,
-        width: `${columnWeight * 6}px`,
+        width: `${columnWeight * 10}px`,
         height: `${rowHeight * 2}px`,
 
         borderStyle: `${getBorderStyle(border?.all?.lineStyle)}`,
@@ -105,23 +94,16 @@ const ListReportCell = ({ properties }: ListReportCellProps) => {
         borderRightStyle: `${getBorderStyle(border?.right?.lineStyle)}`,
         borderRightWidth: `${border?.right?.thickness}px`,
         borderRightColor: toColor(border?.right?.color),
+
         // borderTop: `${border.top.thickness}px ${getBorderStyle(border.top.lineStyle)} ${border.top.color}`,
         // borderBottom: `${border.bottom.thickness}px ${getBorderStyle(border.bottom.lineStyle)} ${border.bottom.color}`,
         // borderLeft: `${border.left.thickness}px ${getBorderStyle(border.left.lineStyle)} ${border.left.color}`,
         // borderRight: `${border.right.thickness}px ${getBorderStyle(border.right.lineStyle)} ${border.right.color}`,
     };
 
-    // console.log("ListReportCell: ", properties)
     return (
       <>
-          {/*<h1>AAA</h1>*/}
-        {/*<div style={{*/}
-        {/*    backgroundColor: toColor(backgroundColor),*/}
-        {/*    width: `${cellWeight * 6}px`,*/}
-        {/*    height: `${cellHeight * 2}px`*/}
-        {/*}}>*/}
-          <div style={{ ...style}}>
-        {/*<div>*/}
+        <div style={{ ...style}}>
             {cellValue}
         </div>
       </>
